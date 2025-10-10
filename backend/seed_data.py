@@ -48,8 +48,9 @@ def create_sample_data():
         db.commit()
         db.refresh(ambassador)
         
-        # Create sample merchants
+        # Create sample merchants with diverse activities
         merchants_data = [
+            # RESTAURANTS
             {
                 "name": "Maquis Doho",
                 "description": "Le meilleur maquis du quartier avec spécialités ivoiriennes",
@@ -167,6 +168,236 @@ def create_sample_data():
                 "price_level": 1,
                 "rating": 4.6,
                 "review_count": 203,
+                "is_verified": True,
+                "is_open": True
+            },
+            
+            # SANTÉ
+            {
+                "name": "Hôpital Général d'Abidjan",
+                "description": "Hôpital public principal d'Abidjan avec services d'urgence 24h/24",
+                "category_id": restaurant_cat.id,  # Temporaire, sera remplacé par hôpital
+                "latitude": 6.1800,
+                "longitude": 1.2400,
+                "address": "Boulevard de la République, Plateau",
+                "phone_number": "+22520212223",
+                "whatsapp_number": "+22520212223",
+                "opening_hours": json.dumps({
+                    "monday": "00:00-24:00",
+                    "tuesday": "00:00-24:00",
+                    "wednesday": "00:00-24:00",
+                    "thursday": "00:00-24:00",
+                    "friday": "00:00-24:00",
+                    "saturday": "00:00-24:00",
+                    "sunday": "00:00-24:00"
+                }),
+                "price_level": 1,
+                "rating": 4.2,
+                "review_count": 89,
+                "is_verified": True,
+                "is_open": True
+            },
+            {
+                "name": "Pharmacie du Plateau",
+                "description": "Pharmacie de garde avec livraison à domicile",
+                "category_id": restaurant_cat.id,  # Temporaire
+                "latitude": 6.1780,
+                "longitude": 1.2380,
+                "address": "Avenue Franchet d'Esperey, Plateau",
+                "phone_number": "+22520212224",
+                "whatsapp_number": "+22520212224",
+                "opening_hours": json.dumps({
+                    "monday": "08:00-20:00",
+                    "tuesday": "08:00-20:00",
+                    "wednesday": "08:00-20:00",
+                    "thursday": "08:00-20:00",
+                    "friday": "08:00-20:00",
+                    "saturday": "08:00-18:00",
+                    "sunday": "09:00-17:00"
+                }),
+                "price_level": 2,
+                "rating": 4.4,
+                "review_count": 156,
+                "is_verified": True,
+                "is_open": True
+            },
+            
+            # ÉDUCATION
+            {
+                "name": "Université Félix Houphouët-Boigny",
+                "description": "Université publique principale d'Abidjan",
+                "category_id": restaurant_cat.id,  # Temporaire
+                "latitude": 6.1900,
+                "longitude": 1.2500,
+                "address": "Cocody, Université",
+                "phone_number": "+22520212225",
+                "whatsapp_number": "+22520212225",
+                "opening_hours": json.dumps({
+                    "monday": "08:00-17:00",
+                    "tuesday": "08:00-17:00",
+                    "wednesday": "08:00-17:00",
+                    "thursday": "08:00-17:00",
+                    "friday": "08:00-17:00",
+                    "saturday": "08:00-12:00",
+                    "sunday": "Fermé"
+                }),
+                "price_level": 1,
+                "rating": 4.1,
+                "review_count": 234,
+                "is_verified": True,
+                "is_open": False
+            },
+            
+            # SERVICES
+            {
+                "name": "Garage Auto Express",
+                "description": "Réparation automobile rapide et fiable",
+                "category_id": restaurant_cat.id,  # Temporaire
+                "latitude": 6.1600,
+                "longitude": 1.2100,
+                "address": "Yopougon, Route de Dabou",
+                "phone_number": "+22520212226",
+                "whatsapp_number": "+22520212226",
+                "opening_hours": json.dumps({
+                    "monday": "07:00-18:00",
+                    "tuesday": "07:00-18:00",
+                    "wednesday": "07:00-18:00",
+                    "thursday": "07:00-18:00",
+                    "friday": "07:00-18:00",
+                    "saturday": "08:00-16:00",
+                    "sunday": "Fermé"
+                }),
+                "price_level": 2,
+                "rating": 4.3,
+                "review_count": 78,
+                "is_verified": True,
+                "is_open": True
+            },
+            {
+                "name": "Salon de Coiffure Élégance",
+                "description": "Coiffure et esthétique pour hommes et femmes",
+                "category_id": restaurant_cat.id,  # Temporaire
+                "latitude": 6.1700,
+                "longitude": 1.2300,
+                "address": "Cocody, Angré 8ème Tranche",
+                "phone_number": "+22520212227",
+                "whatsapp_number": "+22520212227",
+                "opening_hours": json.dumps({
+                    "monday": "09:00-19:00",
+                    "tuesday": "09:00-19:00",
+                    "wednesday": "09:00-19:00",
+                    "thursday": "09:00-19:00",
+                    "friday": "09:00-19:00",
+                    "saturday": "09:00-18:00",
+                    "sunday": "10:00-16:00"
+                }),
+                "price_level": 2,
+                "rating": 4.7,
+                "review_count": 145,
+                "is_verified": True,
+                "is_open": True
+            },
+            
+            # FINANCE
+            {
+                "name": "Banque Atlantique",
+                "description": "Banque commerciale avec services complets",
+                "category_id": restaurant_cat.id,  # Temporaire
+                "latitude": 6.1750,
+                "longitude": 1.2350,
+                "address": "Plateau, Avenue Delafosse",
+                "phone_number": "+22520212228",
+                "whatsapp_number": "+22520212228",
+                "opening_hours": json.dumps({
+                    "monday": "08:00-16:00",
+                    "tuesday": "08:00-16:00",
+                    "wednesday": "08:00-16:00",
+                    "thursday": "08:00-16:00",
+                    "friday": "08:00-16:00",
+                    "saturday": "08:00-12:00",
+                    "sunday": "Fermé"
+                }),
+                "price_level": 3,
+                "rating": 4.0,
+                "review_count": 67,
+                "is_verified": True,
+                "is_open": True
+            },
+            
+            # LOISIRS
+            {
+                "name": "Cinéma Cinecocody",
+                "description": "Cinéma moderne avec films internationaux",
+                "category_id": restaurant_cat.id,  # Temporaire
+                "latitude": 6.1850,
+                "longitude": 1.2450,
+                "address": "Cocody, Riviera 2",
+                "phone_number": "+22520212229",
+                "whatsapp_number": "+22520212229",
+                "opening_hours": json.dumps({
+                    "monday": "14:00-23:00",
+                    "tuesday": "14:00-23:00",
+                    "wednesday": "14:00-23:00",
+                    "thursday": "14:00-23:00",
+                    "friday": "14:00-24:00",
+                    "saturday": "14:00-24:00",
+                    "sunday": "14:00-22:00"
+                }),
+                "price_level": 2,
+                "rating": 4.5,
+                "review_count": 189,
+                "is_verified": True,
+                "is_open": True
+            },
+            
+            # RELIGION
+            {
+                "name": "Cathédrale Saint-Paul",
+                "description": "Cathédrale catholique principale d'Abidjan",
+                "category_id": restaurant_cat.id,  # Temporaire
+                "latitude": 6.1700,
+                "longitude": 1.2400,
+                "address": "Plateau, Boulevard de la République",
+                "phone_number": "+22520212230",
+                "whatsapp_number": "+22520212230",
+                "opening_hours": json.dumps({
+                    "monday": "06:00-19:00",
+                    "tuesday": "06:00-19:00",
+                    "wednesday": "06:00-19:00",
+                    "thursday": "06:00-19:00",
+                    "friday": "06:00-19:00",
+                    "saturday": "06:00-19:00",
+                    "sunday": "06:00-19:00"
+                }),
+                "price_level": 1,
+                "rating": 4.6,
+                "review_count": 312,
+                "is_verified": True,
+                "is_open": True
+            },
+            
+            # GOUVERNEMENT
+            {
+                "name": "Mairie de Cocody",
+                "description": "Administration municipale de Cocody",
+                "category_id": restaurant_cat.id,  # Temporaire
+                "latitude": 6.1800,
+                "longitude": 1.2300,
+                "address": "Cocody, Mairie",
+                "phone_number": "+22520212231",
+                "whatsapp_number": "+22520212231",
+                "opening_hours": json.dumps({
+                    "monday": "08:00-16:00",
+                    "tuesday": "08:00-16:00",
+                    "wednesday": "08:00-16:00",
+                    "thursday": "08:00-16:00",
+                    "friday": "08:00-16:00",
+                    "saturday": "08:00-12:00",
+                    "sunday": "Fermé"
+                }),
+                "price_level": 1,
+                "rating": 3.8,
+                "review_count": 45,
                 "is_verified": True,
                 "is_open": True
             }
