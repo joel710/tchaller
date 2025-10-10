@@ -31,7 +31,7 @@ app.include_router(webhook.router)
 app.include_router(categories.router)
 
 # Mount static files
-app.mount("/static", StaticFiles(directory="../frontend"), name="static")
+app.mount("/static", StaticFiles(directory="/workspace/frontend"), name="static")
 
 # Dependency to get the DB session
 def get_db():

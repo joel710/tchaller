@@ -18,6 +18,15 @@ class User(UserBase):
     class Config:
         from_attributes = True
 
+class UserCreateResponse(UserBase):
+    id: int
+    is_verified: bool = False
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
 class AmbassadorBase(BaseModel):
     full_name: str
 
