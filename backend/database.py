@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Boolean, Text, Float
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Boolean, Text, Float, Index
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.sql import func
@@ -22,6 +22,8 @@ class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     phone_number = Column(String, unique=True, index=True, nullable=False)
+    is_verified = Column(Boolean, default=False)
+    last_location = Column(Geometry(geometry_type='POINT', srid=4326))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -45,10 +47,21 @@ class Merchant(Base):
     location = Column(Geometry(geometry_type='POINT', srid=4326), nullable=False)
     address = Column(String)
     phone_number = Column(String)
+    whatsapp_number = Column(String)
     is_verified = Column(Boolean, default=False)
+    is_open = Column(Boolean, default=True)
+    opening_hours = Column(Text)  # JSON string for opening hours
+    price_level = Column(Integer, default=1)  # 1-3 scale
+    rating = Column(Float, default=0.0)
+    review_count = Column(Integer, default=0)
     ambassador_id = Column(Integer, ForeignKey("ambassadors.id"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # Add spatial index
+    __table_args__ = (
+        Index('idx_merchant_location', 'location', postgresql_using='gist'),
+    )
 
     category = relationship("Category", back_populates="merchants")
     ambassador = relationship("Ambassador", back_populates="merchants")
