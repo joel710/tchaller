@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail Ambassadeur - Tcha-llé Ultra Polyvalent</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .form-input {
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .activity-type-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .activity-type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .activity-type-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-globe-africa text-2xl"></i>
+                    <h1 class="text-xl font-bold">Portail Ambassadeur Ultra Polyvalent</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="userInfo" class="text-sm">Chargement...</span>
+                    <button id="logoutBtn" class="bg-white text-purple-600 px-3 py-1 rounded-lg text-sm hover:bg-gray-100 transition">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Déconnexion
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Stats Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="card rounded-xl p-6 shadow-lg">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 rounded-lg">
+                        <i class="fas fa-building text-blue-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Total Activités</p>
+                        <p class="text-2xl font-bold text-gray-800" id="totalActivities">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card rounded-xl p-6 shadow-lg">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-lg">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Vérifiées</p>
+                        <p class="text-2xl font-bold text-gray-800" id="verifiedActivities">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card rounded-xl p-6 shadow-lg">
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-100 rounded-lg">
+                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">En attente</p>
+                        <p class="text-2xl font-bold text-gray-800" id="pendingActivities">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card rounded-xl p-6 shadow-lg">
+                <div class="flex items-center">
+                    <div class="p-3 bg-purple-100 rounded-lg">
+                        <i class="fas fa-star text-purple-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Note moyenne</p>
+                        <p class="text-2xl font-bold text-gray-800" id="averageRating">0.0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-4 mb-8">
+            <button id="addActivityBtn" class="bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition flex items-center">
+                <i class="fas fa-plus mr-2"></i>Ajouter une activité
+            </button>
+            <button id="viewActivitiesBtn" class="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition flex items-center">
+                <i class="fas fa-list mr-2"></i>Mes activités
+            </button>
+            <button id="scanQrBtn" class="bg-purple-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-600 transition flex items-center">
+                <i class="fas fa-qrcode mr-2"></i>Scanner QR Code
+            </button>
+            <button id="analyticsBtn" class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition flex items-center">
+                <i class="fas fa-chart-bar mr-2"></i>Analytics
+            </button>
+        </div>
+
+        <!-- Activity Type Selection -->
+        <div id="activityTypeSelection" class="card rounded-xl p-8 shadow-lg mb-8" style="display: none;">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Choisir le type d'activité</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
+                <!-- Santé -->
+                <div class="activity-type-card p-4 border-2 border-gray-200 rounded-lg text-center" data-type="health">
+                    <i class="fas fa-hospital text-3xl text-red-500 mb-2"></i>
+                    <p class="text-sm font-medium">Santé</p>
+                </div>
+                
+                <!-- Éducation -->
+                <div class="activity-type-card p-4 border-2 border-gray-200 rounded-lg text-center" data-type="education">
+                    <i class="fas fa-graduation-cap text-3xl text-blue-500 mb-2"></i>
+                    <p class="text-sm font-medium">Éducation</p>
+                </div>
+                
+                <!-- Services -->
+                <div class="activity-type-card p-4 border-2 border-gray-200 rounded-lg text-center" data-type="services">
+                    <i class="fas fa-tools text-3xl text-green-500 mb-2"></i>
+                    <p class="text-sm font-medium">Services</p>
+                </div>
+                
+                <!-- Alimentation -->
+                <div class="activity-type-card p-4 border-2 border-gray-200 rounded-lg text-center" data-type="food">
+                    <i class="fas fa-utensils text-3xl text-orange-500 mb-2"></i>
+                    <p class="text-sm font-medium">Alimentation</p>
+                </div>
+                
+                <!-- Loisirs -->
+                <div class="activity-type-card p-4 border-2 border-gray-200 rounded-lg text-center" data-type="entertainment">
+                    <i class="fas fa-film text-3xl text-purple-500 mb-2"></i>
+                    <p class="text-sm font-medium">Loisirs</p>
+                </div>
+                
+                <!-- Religion -->
+                <div class="activity-type-card p-4 border-2 border-gray-200 rounded-lg text-center" data-type="religion">
+                    <i class="fas fa-pray text-3xl text-indigo-500 mb-2"></i>
+                    <p class="text-sm font-medium">Religion</p>
+                </div>
+                
+                <!-- Administration -->
+                <div class="activity-type-card p-4 border-2 border-gray-200 rounded-lg text-center" data-type="government">
+                    <i class="fas fa-landmark text-3xl text-gray-600 mb-2"></i>
+                    <p class="text-sm font-medium">Administration</p>
+                </div>
+                
+                <!-- Finance -->
+                <div class="activity-type-card p-4 border-2 border-gray-200 rounded-lg text-center" data-type="finance">
+                    <i class="fas fa-university text-3xl text-yellow-600 mb-2"></i>
+                    <p class="text-sm font-medium">Finance</p>
+                </div>
+                
+                <!-- Transport -->
+                <div class="activity-type-card p-4 border-2 border-gray-200 rounded-lg text-center" data-type="transport">
+                    <i class="fas fa-car text-3xl text-teal-500 mb-2"></i>
+                    <p class="text-sm font-medium">Transport</p>
+                </div>
+                
+                <!-- Autre -->
+                <div class="activity-type-card p-4 border-2 border-gray-200 rounded-lg text-center" data-type="other">
+                    <i class="fas fa-ellipsis-h text-3xl text-gray-500 mb-2"></i>
+                    <p class="text-sm font-medium">Autre</p>
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-4">
+                <button type="button" id="cancelTypeSelectionBtn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+                    Annuler
+                </button>
+                <button type="button" id="continueWithTypeBtn" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition" disabled>
+                    Continuer
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Activity Form -->
+        <div id="addActivityForm" class="card rounded-xl p-8 shadow-lg mb-8" style="display: none;">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Ajouter une nouvelle activité</h2>
+            
+            <form id="activityForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nom de l'activité *</label>
+                        <input type="text" id="activityName" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Type d'activité *</label>
+                        <select id="activityType" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" required>
+                            <option value="">Sélectionner un type</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea id="activityDescription" rows="3" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="Décrivez l'activité..."></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Adresse *</label>
+                        <input type="text" id="activityAddress" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Niveau de prix</label>
+                        <select id="activityPriceLevel" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+                            <option value="1">€ - Économique</option>
+                            <option value="2" selected>€€ - Modéré</option>
+                            <option value="3">€€€ - Cher</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
+                        <input type="tel" id="activityPhone" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="+225 12 34 56 78">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">WhatsApp</label>
+                        <input type="tel" id="activityWhatsapp" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="+225 12 34 56 78">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="activityEmail" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="contact@exemple.com">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Site web</label>
+                        <input type="url" id="activityWebsite" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="https://exemple.com">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Horaires d'ouverture</label>
+                    <textarea id="activityHours" rows="2" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="Ex: Lun-Ven: 8h-18h, Sam: 8h-16h, Dim: Fermé"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Latitude *</label>
+                        <input type="number" id="activityLatitude" step="any" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="6.1723" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Longitude *</label>
+                        <input type="number" id="activityLongitude" step="any" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none" placeholder="1.2312" required>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button type="button" id="getLocationBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Utiliser ma position
+                    </button>
+                    <span class="text-sm text-gray-500">ou</span>
+                    <span class="text-sm text-gray-500">Entrez les coordonnées manuellement</span>
+                </div>
+                
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancelFormBtn" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition">
+                        Annuler
+                    </button>
+                    <button type="submit" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-save mr-2"></i>Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Activities List -->
+        <div id="activitiesList" class="card rounded-xl p-8 shadow-lg" style="display: none;">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Mes activités</h2>
+                <div class="flex space-x-2">
+                    <select id="filterType" class="px-4 py-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+                        <option value="">Tous les types</option>
+                    </select>
+                    <select id="filterStatus" class="px-4 py-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
+                        <option value="">Tous les statuts</option>
+                        <option value="verified">Vérifiées</option>
+                        <option value="pending">En attente</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="activitiesContainer" class="space-y-4">
+                <!-- Activities will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- PWA Install Prompt -->
+    <div id="installPrompt" class="fixed bottom-4 left-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4" style="display: none;">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-mobile-alt text-purple-600 text-xl"></i>
+                <div>
+                    <p class="font-semibold text-gray-800">Installer l'app</p>
+                    <p class="text-sm text-gray-600">Ajoutez Tcha-llé à votre écran d'accueil</p>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <button id="installLaterBtn" class="px-3 py-1 text-gray-600 hover:text-gray-800">Plus tard</button>
+                <button id="installAppBtn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Installer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PWA Installation
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').style.display = 'block';
+        });
+        
+        document.getElementById('installAppBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+                document.getElementById('installPrompt').style.display = 'none';
+            }
+        });
+        
+        document.getElementById('installLaterBtn').addEventListener('click', () => {
+            document.getElementById('installPrompt').style.display = 'none';
+        });
+
+        // Activity Type Selection
+        let selectedActivityType = null;
+        
+        document.querySelectorAll('.activity-type-card').forEach(card => {
+            card.addEventListener('click', () => {
+                // Remove previous selection
+                document.querySelectorAll('.activity-type-card').forEach(c => c.classList.remove('selected'));
+                
+                // Add selection to clicked card
+                card.classList.add('selected');
+                selectedActivityType = card.dataset.type;
+                
+                // Enable continue button
+                document.getElementById('continueWithTypeBtn').disabled = false;
+            });
+        });
+        
+        // Activity Type Mappings
+        const activityTypeMappings = {
+            health: {
+                name: 'Santé',
+                types: [
+                    { value: 'hospital', label: 'Hôpital' },
+                    { value: 'clinic', label: 'Clinique' },
+                    { value: 'pharmacy', label: 'Pharmacie' },
+                    { value: 'laboratory', label: 'Laboratoire' },
+                    { value: 'dental', label: 'Cabinet dentaire' },
+                    { value: 'optical', label: 'Optique' }
+                ]
+            },
+            education: {
+                name: 'Éducation',
+                types: [
+                    { value: 'university', label: 'Université' },
+                    { value: 'school', label: 'École' },
+                    { value: 'training_center', label: 'Centre de formation' },
+                    { value: 'library', label: 'Bibliothèque' },
+                    { value: 'research_center', label: 'Centre de recherche' }
+                ]
+            },
+            services: {
+                name: 'Services',
+                types: [
+                    { value: 'garage', label: 'Garage automobile' },
+                    { value: 'hairdresser', label: 'Coiffure' },
+                    { value: 'beauty_salon', label: 'Salon de beauté' },
+                    { value: 'repair_shop', label: 'Réparation' },
+                    { value: 'cleaning', label: 'Nettoyage' },
+                    { value: 'security', label: 'Sécurité' }
+                ]
+            },
+            food: {
+                name: 'Alimentation',
+                types: [
+                    { value: 'restaurant', label: 'Restaurant' },
+                    { value: 'maquis', label: 'Maquis' },
+                    { value: 'bar', label: 'Bar' },
+                    { value: 'cafe', label: 'Café' },
+                    { value: 'bakery', label: 'Boulangerie' },
+                    { value: 'grocery', label: 'Épicerie' }
+                ]
+            },
+            entertainment: {
+                name: 'Loisirs',
+                types: [
+                    { value: 'cinema', label: 'Cinéma' },
+                    { value: 'theater', label: 'Théâtre' },
+                    { value: 'gaming_center', label: 'Centre de jeux' },
+                    { value: 'sports_center', label: 'Centre sportif' },
+                    { value: 'museum', label: 'Musée' },
+                    { value: 'park', label: 'Parc' }
+                ]
+            },
+            religion: {
+                name: 'Religion',
+                types: [
+                    { value: 'church', label: 'Église' },
+                    { value: 'mosque', label: 'Mosquée' },
+                    { value: 'temple', label: 'Temple' },
+                    { value: 'synagogue', label: 'Synagogue' }
+                ]
+            },
+            government: {
+                name: 'Administration',
+                types: [
+                    { value: 'city_hall', label: 'Mairie' },
+                    { value: 'prefecture', label: 'Préfecture' },
+                    { value: 'court', label: 'Tribunal' },
+                    { value: 'ministry', label: 'Ministère' },
+                    { value: 'embassy', label: 'Ambassade' }
+                ]
+            },
+            finance: {
+                name: 'Finance',
+                types: [
+                    { value: 'bank', label: 'Banque' },
+                    { value: 'insurance', label: 'Assurance' },
+                    { value: 'microfinance', label: 'Microfinance' },
+                    { value: 'exchange', label: 'Bureau de change' }
+                ]
+            },
+            transport: {
+                name: 'Transport',
+                types: [
+                    { value: 'gas_station', label: 'Station-service' },
+                    { value: 'taxi_stand', label: 'Station de taxi' },
+                    { value: 'bus_station', label: 'Gare routière' },
+                    { value: 'airport', label: 'Aéroport' }
+                ]
+            },
+            other: {
+                name: 'Autre',
+                types: [
+                    { value: 'ngo', label: 'ONG' },
+                    { value: 'association', label: 'Association' },
+                    { value: 'consulting', label: 'Cabinet de conseil' },
+                    { value: 'other', label: 'Autre' }
+                ]
+            }
+        };
+
+        // Event Listeners
+        document.getElementById('addActivityBtn').addEventListener('click', () => {
+            document.getElementById('activityTypeSelection').style.display = 'block';
+            document.getElementById('addActivityForm').style.display = 'none';
+            document.getElementById('activitiesList').style.display = 'none';
+        });
+
+        document.getElementById('continueWithTypeBtn').addEventListener('click', () => {
+            if (selectedActivityType) {
+                populateActivityTypes(selectedActivityType);
+                document.getElementById('activityTypeSelection').style.display = 'none';
+                document.getElementById('addActivityForm').style.display = 'block';
+            }
+        });
+
+        document.getElementById('cancelTypeSelectionBtn').addEventListener('click', () => {
+            document.getElementById('activityTypeSelection').style.display = 'none';
+            selectedActivityType = null;
+            document.querySelectorAll('.activity-type-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('continueWithTypeBtn').disabled = true;
+        });
+
+        document.getElementById('viewActivitiesBtn').addEventListener('click', () => {
+            document.getElementById('addActivityForm').style.display = 'none';
+            document.getElementById('activityTypeSelection').style.display = 'none';
+            document.getElementById('activitiesList').style.display = 'block';
+            loadActivities();
+        });
+
+        document.getElementById('cancelFormBtn').addEventListener('click', () => {
+            document.getElementById('addActivityForm').style.display = 'none';
+            document.getElementById('activityTypeSelection').style.display = 'none';
+            resetForm();
+        });
+
+        // Functions
+        function populateActivityTypes(category) {
+            const typeSelect = document.getElementById('activityType');
+            typeSelect.innerHTML = '<option value="">Sélectionner un type</option>';
+            
+            if (activityTypeMappings[category]) {
+                activityTypeMappings[category].types.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type.value;
+                    option.textContent = type.label;
+                    typeSelect.appendChild(option);
+                });
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('activityForm').reset();
+            selectedActivityType = null;
+            document.querySelectorAll('.activity-type-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('continueWithTypeBtn').disabled = true;
+        }
+
+        function loadActivities() {
+            // This would load activities from the API
+            const container = document.getElementById('activitiesContainer');
+            container.innerHTML = '<p class="text-gray-500 text-center py-8">Chargement des activités...</p>';
+            
+            // Simulate API call
+            setTimeout(() => {
+                container.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-building text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">Aucune activité enregistrée</p>
+                        <button onclick="document.getElementById('addActivityBtn').click()" class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                            Ajouter votre première activité
+                        </button>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // Form submission
+        document.getElementById('activityForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('activityName').value,
+                type: document.getElementById('activityType').value,
+                description: document.getElementById('activityDescription').value,
+                address: document.getElementById('activityAddress').value,
+                price_level: parseInt(document.getElementById('activityPriceLevel').value),
+                phone_number: document.getElementById('activityPhone').value,
+                whatsapp_number: document.getElementById('activityWhatsapp').value,
+                email: document.getElementById('activityEmail').value,
+                website: document.getElementById('activityWebsite').value,
+                opening_hours: document.getElementById('activityHours').value,
+                latitude: parseFloat(document.getElementById('activityLatitude').value),
+                longitude: parseFloat(document.getElementById('activityLongitude').value)
+            };
+            
+            try {
+                // This would send data to the API
+                console.log('Submitting activity:', formData);
+                alert('Activité enregistrée avec succès !');
+                resetForm();
+                document.getElementById('addActivityForm').style.display = 'none';
+            } catch (error) {
+                console.error('Error submitting activity:', error);
+                alert('Erreur lors de l\'enregistrement');
+            }
+        });
+
+        // Geolocation
+        document.getElementById('getLocationBtn').addEventListener('click', () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    document.getElementById('activityLatitude').value = position.coords.latitude;
+                    document.getElementById('activityLongitude').value = position.coords.longitude;
+                }, (error) => {
+                    alert('Impossible d\'obtenir votre position');
+                });
+            } else {
+                alert('La géolocalisation n\'est pas supportée');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load user info
+            document.getElementById('userInfo').textContent = 'Ambassadeur Tcha-llé';
+            
+            // Load stats (simulated)
+            document.getElementById('totalActivities').textContent = '0';
+            document.getElementById('verifiedActivities').textContent = '0';
+            document.getElementById('pendingActivities').textContent = '0';
+            document.getElementById('averageRating').textContent = '0.0';
+        });
+    </script>
+</body>
+</html>
