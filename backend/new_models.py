@@ -344,7 +344,7 @@ class UserInteraction(Base):
     ip_address = Column(String(45))  # IPv6 compatible
     
     # Données additionnelles
-    metadata = Column(JSON, default={})
+    interaction_metadata = Column(JSON, default={})
     
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())

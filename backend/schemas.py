@@ -123,6 +123,8 @@ class SearchRequest(BaseModel):
     category_id: Optional[int] = None
     price_level: Optional[int] = Field(None, ge=1, le=3)
     is_open_now: Optional[bool] = None
+    limit: Optional[int] = Field(default=10, description="Maximum number of results")
+    user_id: Optional[int] = None
 
 class SearchResponse(BaseModel):
     merchants: List[Merchant]
