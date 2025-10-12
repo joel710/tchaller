@@ -4,16 +4,24 @@ services:
     env: python
     plan: free
     buildCommand: |
-      pip install -r backend/requirements.txt
-      python -c "from backend.database import create_db_and_tables; create_db_and_tables()"
+      pip install -r requirements.txt
+      python -c "from backend.database.connection import create_tables; create_tables()"
       python -c "from backend.seed_data import create_sample_data; create_sample_data()"
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
         value: postgresql://neondb_owner:npg_cxutU4TLm1qp@ep-wispy-darkness-agjihedd-pooler.c-2.eu-central-1.aws.neon.tech/tchaller?sslmode=require&channel_binding=require
       - key: SECRET_KEY
-        value: your-secret-key-here-change-in-production
+        value: tchaller-ultra-polyvalent-secret-key-2024-render-deploy
       - key: ALGORITHM
         value: HS256
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "30"
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: CORS_ALLOW_METHODS
+        value: "*"
+      - key: CORS_ALLOW_HEADERS
+        value: "*"
+      - key: CORS_ALLOW_CREDENTIALS
+        value: "true"
