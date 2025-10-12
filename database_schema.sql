@@ -1,11 +1,18 @@
+DROP SCHEMA IF EXISTS public CASCADE;
+CREATE SCHEMA public;
+
 -- =====================================================
 -- TCHA-LLÉ - STRUCTURE DE BASE DE DONNÉES ULTRA POLYVALENTE
 -- =====================================================
 -- Version: 2.0.0
 -- Description: Structure évolutive pour toutes activités locales
 -- Auteur: Tcha-llé Team
--- Date: 2024
+-- Date: 2025
 -- =====================================================
+
+DROP TABLE IF EXISTS user_roles CASCADE;
+DROP TABLE IF EXISTS roles CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
 -- Extension PostGIS pour la géolocalisation
 CREATE EXTENSION IF NOT EXISTS postgis;
@@ -851,7 +858,7 @@ INSERT INTO subscription_plans (name, description, price_monthly, price_yearly, 
 -- =====================================================
 
 -- Index pour les performances de recherche
-CREATE INDEX idx_activities_search ON activities USING GIN (to_tsvector('french', name || ' ' || COALESCE(description, '') || ' ' || array_to_string(tags, ' ')));
+-- CREATE INDEX idx_activities_search ON activities USING GIN (to_tsvector('french', name || ' ' || COALESCE(description, '') || ' ' || array_to_string(tags, ' ')));
 CREATE INDEX idx_activities_rating ON activities (rating DESC, review_count DESC);
 CREATE INDEX idx_activities_created ON activities (created_at DESC);
 CREATE INDEX idx_activities_updated ON activities (updated_at DESC);
