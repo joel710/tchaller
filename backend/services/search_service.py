@@ -8,21 +8,21 @@ from geoalchemy2 import functions as gf
 from backend.schemas.search import SearchRequest, SearchResponse
 from backend.schemas.activities import ActivityResponse
 from backend.database.models import Activity, Category, ActivityType, Review, Media
-from .enhanced_search_engine import EnhancedConversationalSearchEngine
+from .simple_search_engine import SimpleConversationalSearchEngine
 import time
 
 class SearchService:
     def __init__(self, db: Session):
         self.db = db
-        self.search_engine = EnhancedConversationalSearchEngine()
+        self.search_engine = SimpleConversationalSearchEngine()
     
     async def search_activities(self, request: SearchRequest) -> SearchResponse:
         """Recherche d'activités avec moteur conversationnel"""
         start_time = time.time()
         
         try:
-            # Utiliser le moteur de recherche amélioré
-            result = self.search_engine.search(self.db, request)
+            # Utiliser le moteur de recherche simplifié
+            result = self.search_engine.search(request, self.db)
             
             # Convertir les activités en ActivityResponse
             activities = []
