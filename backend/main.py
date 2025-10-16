@@ -8,7 +8,7 @@ from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 import os
 
-from backend.config import settings
+from config import settings
 from backend.database.connection import create_tables
 from backend.api import api_router
 
