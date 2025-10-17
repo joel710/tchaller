@@ -3,9 +3,9 @@ Routes pour les webhooks
 """
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
-from backend.database import get_db
-from backend.database.models import Webhook, WebhookLog
-from backend.schemas.common import MessageResponse
+from database.connection import get_db
+from database.models import Webhook, WebhookLog
+from schemas.common import MessageResponse
 import json
 
 router = APIRouter()

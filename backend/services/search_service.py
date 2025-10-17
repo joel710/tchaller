@@ -5,9 +5,9 @@ from typing import List, Dict, Any, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import text, func
 from geoalchemy2 import functions as gf
-from backend.schemas.search import SearchRequest, SearchResponse
-from backend.schemas.activities import ActivityResponse
-from backend.database.models import Activity, Category, ActivityType, Review, Media
+from schemas.search import SearchRequest, SearchResponse
+from schemas.activities import ActivityResponse
+from database.models import Activity, Category, ActivityType, Review, Media
 from .enhanced_search_engine import EnhancedConversationalSearchEngine
 import time
 

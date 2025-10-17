@@ -9,8 +9,8 @@ from contextlib import asynccontextmanager
 import os
 
 from config import settings
-from backend.database.connection import create_tables
-from backend.api import api_router
+from database.connection import create_tables
+from api import api_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

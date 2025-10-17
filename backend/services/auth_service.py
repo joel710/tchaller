@@ -3,9 +3,9 @@ Service d'authentification
 """
 from typing import Optional
 from sqlalchemy.orm import Session
-from backend.database.models import User, UserRole, Role
-from backend.schemas.users import UserCreate
-from backend.config import settings
+from database.models import User, UserRole, Role
+from schemas.users import UserCreate
+from config import settings
 import jwt
 from datetime import datetime, timedelta
 

@@ -4,8 +4,8 @@ Routes pour les catégories
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from backend.database import get_db
-from backend.database.models import Category, ActivityType
+from database.connection import get_db
+from database.models import Category, ActivityType
 
 router = APIRouter()
 

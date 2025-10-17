@@ -3,9 +3,9 @@ Routes pour les utilisateurs
 """
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from backend.database import get_db
-from backend.schemas.users import UserResponse, UserUpdate, UserProfile, UserStats
-from backend.services.auth_service import AuthService
+from database.connection import get_db
+from schemas.users import UserResponse, UserUpdate, UserProfile, UserStats
+from services.auth_service import AuthService
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 router = APIRouter()

@@ -3,8 +3,8 @@ Service de gestion des activités
 """
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from backend.database.models import Activity, Category, ActivityType
-from backend.schemas.activities import ActivityCreate, ActivityUpdate, ActivityResponse
+from database.models import Activity, Category, ActivityType
+from schemas.activities import ActivityCreate, ActivityUpdate, ActivityResponse
 from geoalchemy2 import functions as gf
 
 class ActivityService:

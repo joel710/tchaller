@@ -1,9 +1,19 @@
 from sqlalchemy.orm import Session
-from .database import SessionLocal, Category, Merchant, Ambassador, User
+from backend.database.connection import SessionLocal, engine, Base
+from backend.database.models import Category, Activity, Ambassador, User
 from geoalchemy2 import functions as gf
 import json
+import re # Import the re module for slugify
+
+def slugify(text):
+    text = text.lower()
+    text = re.sub(r'[^a-z0-9]+', '-', text) # Replace non-alphanumeric with hyphens
+    text = text.strip('-') # Remove leading/trailing hyphens
+    return text
 
 def create_sample_data():
+    # Base.metadata.drop_all(engine) # Drop all tables to ensure a clean slate
+    Base.metadata.create_all(engine) # Ensure all tables are created
     db = SessionLocal()
     
     try:
@@ -18,12 +28,19 @@ def create_sample_data():
             {"name": "Pharmacie"},
             {"name": "Coiffure"},
             {"name": "Réparation"},
+            {"name": "Santé"},
+            {"name": "Éducation"},
+            {"name": "Services"},
+            {"name": "Finance"},
+            {"name": "Loisirs"},
+            {"name": "Religion"},
+            {"name": "Gouvernement"},
         ]
         
         for cat_data in categories_data:
             existing = db.query(Category).filter(Category.name == cat_data["name"]).first()
             if not existing:
-                category = Category(name=cat_data["name"])
+                category = Category(name=cat_data["name"], slug=slugify(cat_data["name"]))
                 db.add(category)
         
         db.commit()
@@ -33,20 +50,32 @@ def create_sample_data():
         maquis_cat = db.query(Category).filter(Category.name == "Maquis").first()
         bar_cat = db.query(Category).filter(Category.name == "Bar").first()
         boutique_cat = db.query(Category).filter(Category.name == "Boutique").first()
+        sante_cat = db.query(Category).filter(Category.name == "Santé").first()
+        education_cat = db.query(Category).filter(Category.name == "Éducation").first()
+        services_cat = db.query(Category).filter(Category.name == "Services").first()
+        finance_cat = db.query(Category).filter(Category.name == "Finance").first()
+        loisirs_cat = db.query(Category).filter(Category.name == "Loisirs").first()
+        religion_cat = db.query(Category).filter(Category.name == "Religion").first()
+        gouvernement_cat = db.query(Category).filter(Category.name == "Gouvernement").first()
         
         # Create sample ambassador
-        ambassador_user = User(phone_number="+225123456789", is_verified=True)
-        db.add(ambassador_user)
-        db.commit()
-        db.refresh(ambassador_user)
+        ambassador_phone_number = "+225123456789"
+        ambassador_user = db.query(User).filter(User.phone_number == ambassador_phone_number).first()
         
-        ambassador = Ambassador(
-            user_id=ambassador_user.id,
-            full_name="Jean Kouassi"
-        )
-        db.add(ambassador)
-        db.commit()
-        db.refresh(ambassador)
+        if not ambassador_user:
+            ambassador_user = User(phone_number=ambassador_phone_number, full_name="Jean Kouassi", is_verified=True)
+            db.add(ambassador_user)
+            db.commit()
+            db.refresh(ambassador_user)
+        
+        ambassador = db.query(Ambassador).filter(Ambassador.user_id == ambassador_user.id).first()
+        if not ambassador:
+            ambassador = Ambassador(
+                user_id=ambassador_user.id
+            )
+            db.add(ambassador)
+            db.commit()
+            db.refresh(ambassador)
         
         # Create sample merchants with diverse activities
         merchants_data = [
@@ -176,7 +205,7 @@ def create_sample_data():
             {
                 "name": "Hôpital Général d'Abidjan",
                 "description": "Hôpital public principal d'Abidjan avec services d'urgence 24h/24",
-                "category_id": restaurant_cat.id,  # Temporaire, sera remplacé par hôpital
+                "category_id": sante_cat.id,
                 "latitude": 6.1800,
                 "longitude": 1.2400,
                 "address": "Boulevard de la République, Plateau",
@@ -200,7 +229,7 @@ def create_sample_data():
             {
                 "name": "Pharmacie du Plateau",
                 "description": "Pharmacie de garde avec livraison à domicile",
-                "category_id": restaurant_cat.id,  # Temporaire
+                "category_id": sante_cat.id,
                 "latitude": 6.1780,
                 "longitude": 1.2380,
                 "address": "Avenue Franchet d'Esperey, Plateau",
@@ -226,7 +255,7 @@ def create_sample_data():
             {
                 "name": "Université Félix Houphouët-Boigny",
                 "description": "Université publique principale d'Abidjan",
-                "category_id": restaurant_cat.id,  # Temporaire
+                "category_id": education_cat.id,
                 "latitude": 6.1900,
                 "longitude": 1.2500,
                 "address": "Cocody, Université",
@@ -252,7 +281,7 @@ def create_sample_data():
             {
                 "name": "Garage Auto Express",
                 "description": "Réparation automobile rapide et fiable",
-                "category_id": restaurant_cat.id,  # Temporaire
+                "category_id": services_cat.id,
                 "latitude": 6.1600,
                 "longitude": 1.2100,
                 "address": "Yopougon, Route de Dabou",
@@ -276,7 +305,7 @@ def create_sample_data():
             {
                 "name": "Salon de Coiffure Élégance",
                 "description": "Coiffure et esthétique pour hommes et femmes",
-                "category_id": restaurant_cat.id,  # Temporaire
+                "category_id": services_cat.id,
                 "latitude": 6.1700,
                 "longitude": 1.2300,
                 "address": "Cocody, Angré 8ème Tranche",
@@ -302,7 +331,7 @@ def create_sample_data():
             {
                 "name": "Banque Atlantique",
                 "description": "Banque commerciale avec services complets",
-                "category_id": restaurant_cat.id,  # Temporaire
+                "category_id": finance_cat.id,
                 "latitude": 6.1750,
                 "longitude": 1.2350,
                 "address": "Plateau, Avenue Delafosse",
@@ -328,7 +357,7 @@ def create_sample_data():
             {
                 "name": "Cinéma Cinecocody",
                 "description": "Cinéma moderne avec films internationaux",
-                "category_id": restaurant_cat.id,  # Temporaire
+                "category_id": loisirs_cat.id,
                 "latitude": 6.1850,
                 "longitude": 1.2450,
                 "address": "Cocody, Riviera 2",
@@ -354,7 +383,7 @@ def create_sample_data():
             {
                 "name": "Cathédrale Saint-Paul",
                 "description": "Cathédrale catholique principale d'Abidjan",
-                "category_id": restaurant_cat.id,  # Temporaire
+                "category_id": religion_cat.id,
                 "latitude": 6.1700,
                 "longitude": 1.2400,
                 "address": "Plateau, Boulevard de la République",
@@ -380,7 +409,7 @@ def create_sample_data():
             {
                 "name": "Mairie de Cocody",
                 "description": "Administration municipale de Cocody",
-                "category_id": restaurant_cat.id,  # Temporaire
+                "category_id": gouvernement_cat.id,
                 "latitude": 6.1800,
                 "longitude": 1.2300,
                 "address": "Cocody, Mairie",
@@ -403,29 +432,29 @@ def create_sample_data():
             }
         ]
         
-        for merchant_data in merchants_data:
-            existing = db.query(Merchant).filter(Merchant.name == merchant_data["name"]).first()
+        for activity_data in merchants_data:
+            existing = db.query(Activity).filter(Activity.name == activity_data["name"]).first()
             if not existing:
-                merchant = Merchant(
-                    name=merchant_data["name"],
-                    description=merchant_data["description"],
-                    category_id=merchant_data["category_id"],
-                    address=merchant_data["address"],
-                    phone_number=merchant_data["phone_number"],
-                    whatsapp_number=merchant_data["whatsapp_number"],
-                    opening_hours=merchant_data["opening_hours"],
-                    price_level=merchant_data["price_level"],
-                    rating=merchant_data["rating"],
-                    review_count=merchant_data["review_count"],
-                    is_verified=merchant_data["is_verified"],
-                    is_open=merchant_data["is_open"],
-                    ambassador_id=ambassador.id,
+                activity = Activity(
+                    name=activity_data["name"],
+                    description=activity_data["description"],
+                    category_id=activity_data["category_id"],
+                    address=activity_data["address"],
+                    phone_number=activity_data["phone_number"],
+                    whatsapp_number=activity_data["whatsapp_number"],
+                    opening_hours=activity_data["opening_hours"],
+                    price_level=activity_data["price_level"],
+                    rating=activity_data["rating"],
+                    review_count=activity_data["review_count"],
+                    is_verified=activity_data["is_verified"],
+                    is_open=activity_data["is_open"],
+                    owner_id=ambassador_user.id, # Assuming ambassador_user is the owner for now
                     location=gf.ST_SetSRID(
-                        gf.ST_MakePoint(merchant_data["longitude"], merchant_data["latitude"]), 
+                        gf.ST_MakePoint(activity_data["longitude"], activity_data["latitude"]), 
                         4326
                     )
                 )
-                db.add(merchant)
+                db.add(activity)
         
         db.commit()
         print("✅ Sample data created successfully!")

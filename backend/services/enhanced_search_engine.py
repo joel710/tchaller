@@ -7,8 +7,8 @@ from typing import List, Dict, Any, Optional, Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy import text, func
 from geoalchemy2 import functions as gf
-from backend.database.models import Activity, Category, ActivityType, SearchLog
-from backend.schemas.search import SearchRequest
+from database.models import Activity, Category, ActivityType, SearchLog
+from schemas.search import SearchRequest
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity

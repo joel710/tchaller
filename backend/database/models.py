@@ -47,8 +47,8 @@ class User(Base):
     is_verified = Column(Boolean, default=False)
     is_active = Column(Boolean, default=True)
     last_location = Column(Geometry('POINT', srid=4326))
-    language = Column(String(5), default="fr")
-    timezone = Column(String(50), default="Africa/Abidjan")
+    language = Column(String(5), default="fr") # Reverted
+    timezone = Column(String(50), default="Africa/Abidjan") # Reverted
     
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -155,6 +155,7 @@ class Category(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
+    slug = Column(String(100), unique=True, nullable=False, index=True) # Added slug column
     description = Column(Text)
     icon = Column(String(50))
     color = Column(String(7))  # Hex color
@@ -354,18 +355,18 @@ class Ambassador(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    zone_id = Column(Integer, ForeignKey("zones.id"))
-    commission_rate = Column(Float, default=0.0)
-    total_activities = Column(Integer, default=0)
-    verified_activities = Column(Integer, default=0)
-    is_active = Column(Boolean, default=True)
+    zone_id = Column(Integer, ForeignKey("zones.id")) # Reverted
+    commission_rate = Column(Float, default=0.0) # Reverted
+    total_activities = Column(Integer, default=0) # Reverted
+    verified_activities = Column(Integer, default=0) # Reverted
+    is_active = Column(Boolean, default=True) # Reverted
     
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # Relations
     user = relationship("User", back_populates="ambassador")
-    zone = relationship("Zone")
+    zone = relationship("Zone") # Reverted
 
 # Vérifications
 class Verification(Base):

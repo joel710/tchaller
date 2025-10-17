@@ -3,7 +3,7 @@ Service de notifications
 """
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from backend.database.models import Notification, User
+from database.models import Notification, User
 
 class NotificationService:
     def __init__(self, db: Session):

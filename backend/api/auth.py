@@ -4,12 +4,12 @@ Routes d'authentification
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from backend.database import get_db
-from backend.schemas.auth import OTPRequest, OTPVerify, Token, UserLogin, UserRegister
-from backend.schemas.users import UserResponse
-from backend.services.auth_service import AuthService
-from backend.services.otp_service import OTPService
-from backend.config import settings
+from database.connection import get_db
+from schemas.auth import OTPRequest, OTPVerify, Token, UserLogin, UserRegister
+from schemas.users import UserResponse
+from services.auth_service import AuthService
+from services.otp_service import OTPService
+from config import settings
 
 router = APIRouter()
 security = HTTPBearer()

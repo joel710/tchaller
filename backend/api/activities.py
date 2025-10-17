@@ -4,11 +4,11 @@ Routes pour les activités
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from backend.database import get_db
-from backend.schemas.activities import ActivityCreate, ActivityUpdate, ActivityResponse, ActivityListResponse, ActivityFilters
-from backend.schemas.common import PaginationParams, PaginationResponse
-from backend.services.activity_service import ActivityService
-from backend.services.auth_service import AuthService
+from database.connection import get_db
+from schemas.activities import ActivityCreate, ActivityUpdate, ActivityResponse, ActivityListResponse, ActivityFilters
+from schemas.common import PaginationParams, PaginationResponse
+from services.activity_service import ActivityService
+from services.auth_service import AuthService
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 router = APIRouter()

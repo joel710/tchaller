@@ -4,9 +4,9 @@ Routes de recherche
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from backend.database import get_db
-from backend.schemas.search import SearchRequest, SearchResponse, SearchAnalytics
-from backend.services.search_service import SearchService
+from database.connection import get_db
+from schemas.search import SearchRequest, SearchResponse, SearchAnalytics
+from services.search_service import SearchService
 
 router = APIRouter()
 
