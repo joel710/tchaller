@@ -334,17 +334,22 @@
             }
 
             // Display the natural language response first
+            let responseContent = "Je peux vous aider à trouver ce que vous cherchez !";
+            if (data.response) {
+                responseContent = data.response;
+            }
+            
             let resultsHTML = `
-                <div class="result-item" style="background-color: #f0f8ff; border-left: 4px solid #ff5b2e;">
-                    <h2>Réponse de Tchaller</h2>
+                <div class="result-item" style="background-color: #f0f8ff; border-left: 4px solid #ff5b2e; margin-bottom: 25px;">
+                    <h2 style="color: #ff5b2e; margin-top: 0;">💬 Réponse de Tchaller</h2>
                     <div style="font-size: 1.1em; line-height: 1.6;">
-                        ${data.response ? data.response.replace(/\n/g, '<br>') : 'Je peux vous aider à trouver ce que vous cherchez !'}
+                        ${responseContent.replace(/\n/g, '<br>')}
                     </div>
                 </div>
             `;
             
             // Add detailed results
-            resultsHTML += `<h2>Détails des résultats pour "${data.query}"</h2>`;
+            resultsHTML += `<h2 style="color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px;">📋 Détails des résultats pour "${data.query}"</h2>`;
             
             data.activities.forEach(activity => {
                 // Format distance
