@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo - Réponse en Langage Naturel</title>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            margin: 0;
+            background: radial-gradient(circle at center, #fff9f3 0%, #ffffff 100%);
+            color: #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-weight: bold;
+            font-size: 22px;
+            color: #ff5b2e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        header span.logo {
+            background-color: #ff5b2e;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            padding: 20px;
+            width: 90%;
+            max-width: 700px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            border: 1px solid #ddd;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: #444;
+            background-color: #fafafa;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tag:hover {
+            background-color: #ff5b2e;
+            color: white;
+            border-color: #ff5b2e;
+        }
+
+        .chat-input {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            margin-top: 20px;
+            padding: 10px 15px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            padding: 8px;
+        }
+
+        .chat-input button {
+            background-color: #ff5b2e;
+            border: none;
+            color: white;
+            border-radius: 10px;
+            padding: 10px 18px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .chat-input button:hover {
+            background-color: #e14a22;
+        }
+
+        .chat-input button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .results {
+            margin-top: 30px;
+            text-align: left;
+            display: none;
+            width: 90%;
+            max-width: 700px;
+        }
+
+        .ai-response {
+            background: #f0f8ff;
+            border-left: 4px solid #ff5b2e;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .ai-response h2 {
+            color: #ff5b2e;
+            margin-top: 0;
+        }
+
+        .ai-response-content {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .result-item {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ff5b2e;
+        }
+
+        .result-address {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .result-rating {
+            color: #ff5b2e;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .result-contact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #ff5b2e;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <span class="logo">T</span> <span>Tchaller</span>
+    </header>
+
+    <main>
+        <h1>Réponse en Langage Naturel</h1>
+        <p class="subtitle">Découvrez comment Tchaller répond de manière conversationnelle à vos recherches</p>
+
+        <div class="search-box">
+            <div class="chat-input">
+                <input type="text" id="searchInput" placeholder="Ex : Trouve-moi une pharmacie près de Cocody" />
+                <button id="searchButton">Rechercher</button>
+            </div>
+
+            <div class="tags">
+                <div class="tag" data-query="pharmacie ouverte maintenant">🏥 Pharmacies ouvertes</div>
+                <div class="tag" data-query="hôpital urgence">🏥 Hôpitaux d'urgence</div>
+                <div class="tag" data-query="école primaire">🎓 Écoles primaires</div>
+                <div class="tag" data-query="garage réparation voiture">🔧 Garages auto</div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Tchaller réfléchit à votre demande...</p>
+        </div>
+
+        <div class="results" id="results"></div>
+    </main>
+
+    <footer>
+        © 2025 Tchaller – Powered by Strive Technologies
+    </footer>
+
+    <script>
+        // Backend URL
+        const BACKEND_URL = 'https://tchallerback.onrender.com';
+        
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const resultsDiv = document.getElementById('results');
+        const loadingDiv = document.getElementById('loading');
+        const tagElements = document.querySelectorAll('.tag');
+
+        // Event Listeners
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Add event listeners to tags
+        tagElements.forEach(tag => {
+            tag.addEventListener('click', () => {
+                searchInput.value = tag.getAttribute('data-query');
+                performSearch();
+            });
+        });
+
+        // Perform search function
+        async function performSearch() {
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                alert('Veuillez entrer une requête de recherche');
+                return;
+            }
+
+            // Show loading, hide results
+            loadingDiv.style.display = 'block';
+            resultsDiv.style.display = 'none';
+            searchButton.disabled = true;
+
+            try {
+                // Get user's location (mocked for now)
+                const latitude = -4.05; // Default to Abidjan
+                const longitude = 5.35; // Default to Abidjan
+
+                // Prepare request data
+                const requestData = {
+                    query: query,
+                    latitude: latitude,
+                    longitude: longitude,
+                    radius: 10000, // 10km
+                    limit: 5
+                };
+
+                // Make API request
+                const response = await fetch(`${BACKEND_URL}/api/v1/search/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                console.error('Error during search:', error);
+                resultsDiv.innerHTML = `
+                    <div class="result-item">
+                        <p>Erreur lors de la recherche: ${error.message}</p>
+                        <p>Veuillez vérifier que le backend est en cours d'exécution.</p>
+                    </div>
+                `;
+                resultsDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+                searchButton.disabled = false;
+            }
+        }
+
+        // Display results function with natural language response
+        function displayResults(data) {
+            if (!data.activities || data.activities.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="result-item">
+                        <p>Aucun résultat trouvé pour "${data.query}".</p>
+                        <p>Essayez une autre recherche ou élargissez votre requête.</p>
+                    </div>
+                `;
+                resultsDiv.style.display = 'block';
+                return;
+            }
+
+            // Display the natural language response first
+            let resultsHTML = `
+                <div class="ai-response">
+                    <h2>💬 Réponse de Tchaller</h2>
+                    <div class="ai-response-content">
+                        ${data.response ? data.response.replace(/\n/g, '<br>') : 'Je peux vous aider à trouver ce que vous cherchez !'}
+                    </div>
+                </div>
+            `;
+            
+            // Add detailed results section
+            resultsHTML += `<h2>📋 Détails des résultats</h2>`;
+            
+            data.activities.forEach(activity => {
+                // Format distance
+                let distanceText = '';
+                if (activity.distance) {
+                    if (activity.distance < 1000) {
+                        distanceText = `${Math.round(activity.distance)} m`;
+                    } else {
+                        distanceText = `${(activity.distance / 1000).toFixed(1)} km`;
+                    }
+                }
+
+                // Format rating
+                let ratingText = '';
+                if (activity.rating && activity.rating > 0) {
+                    ratingText = `⭐ ${activity.rating.toFixed(1)}/5`;
+                    if (activity.review_count) {
+                        ratingText += ` (${activity.review_count} avis)`;
+                    }
+                }
+
+                // Format price level
+                let priceText = '';
+                if (activity.price_level) {
+                    priceText = '€'.repeat(activity.price_level);
+                }
+
+                // Format contact info
+                let contactHTML = '';
+                if (activity.phone_number || activity.whatsapp_number || activity.email || activity.website) {
+                    contactHTML = '<div class="result-contact">';
+                    
+                    if (activity.phone_number) {
+                        contactHTML += `<div class="contact-item">📞 ${activity.phone_number}</div>`;
+                    }
+                    
+                    if (activity.whatsapp_number) {
+                        contactHTML += `<div class="contact-item">💬 ${activity.whatsapp_number}</div>`;
+                    }
+                    
+                    if (activity.email) {
+                        contactHTML += `<div class="contact-item">✉️ ${activity.email}</div>`;
+                    }
+                    
+                    if (activity.website) {
+                        contactHTML += `<div class="contact-item">🌐 <a href="${activity.website}" target="_blank">Site web</a></div>`;
+                    }
+                    
+                    contactHTML += '</div>';
+                }
+
+                resultsHTML += `
+                    <div class="result-item">
+                        <div class="result-name">${activity.name}</div>
+                        <div class="result-address">${activity.address} ${distanceText ? `(${distanceText})` : ''}</div>
+                        ${ratingText ? `<div class="result-rating">${ratingText} ${priceText}</div>` : ''}
+                        <p>${activity.description || ''}</p>
+                        ${contactHTML}
+                    </div>
+                `;
+            });
+
+            resultsDiv.innerHTML = resultsHTML;
+            resultsDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

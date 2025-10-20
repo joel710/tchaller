@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Frontend Connection</title>
+</head>
+<body>
+    <h1>Test Frontend Connection to Backend</h1>
+    <button onclick="testConnection()">Test Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing connection to backend...';
+            
+            try {
+                const response = await fetch('https://tchallerback.onrender.com/health');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <h2>Backend Connection Success</h2>
+                        <p>Status: ${data.status}</p>
+                        <p>App: ${data.app}</p>
+                        <p>Version: ${data.version}</p>
+                        <p>Message: ${data.message}</p>
+                    `;
+                    
+                    // Now test the search endpoint
+                    await testSearch();
+                } else {
+                    resultDiv.innerHTML = `Backend Health Check Failed: ${response.status} - ${await response.text()}`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Connection Error: ${error.message}`;
+            }
+        }
+        
+        async function testSearch() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML += '<br><p>Testing search functionality...</p>';
+            
+            try {
+                const response = await fetch('https://tchallerback.onrender.com/api/v1/search/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: 'pharmacie',
+                        latitude: -4.05,
+                        longitude: 5.35,
+                        radius: 10000,
+                        limit: 5
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML += `
+                        <h2>Search Test Success</h2>
+                        <p>Total Results: ${data.total_results}</p>
+                        <p>Activities Found: ${data.activities.length}</p>
+                        ${data.activities.length > 0 ? `
+                            <h3>First Result</h3>
+                            <p>Name: ${data.activities[0].name}</p>
+                            <p>Category: ${data.activities[0].category_name}</p>
+                        ` : ''}
+                    `;
+                } else {
+                    resultDiv.innerHTML += `<p>Search Test Failed: ${response.status} - ${await response.text()}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML += `<p>Search Test Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
