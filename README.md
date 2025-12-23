@@ -21,7 +21,7 @@ python run.py
 ```
 
 3. **Accéder à l'application**
-- 🌐 **Interface utilisateur**: http://localhost:8000/static/index.html
+- 🌐 **Interface utilisateur**: http://localhost:8000/static/recherche_ai.html
 - 📚 **Documentation API**: http://localhost:8000/docs
 - 🔧 **API Health**: http://localhost:8000/health
 
