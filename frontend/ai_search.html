@@ -195,17 +195,21 @@
             background: var(--primary-soft);
         }
 
-        /* Results Design */
+        /* Natural AI Response Area */
         #results {
             margin-top: 60px;
             display: none;
-            animation: fadeIn 0.5s ease-out;
         }
 
-        @keyframes fadeIn {
+        .ai-response-area {
+            margin-bottom: 48px;
+            animation: fadeInText 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeInText {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(5px);
             }
 
             to {
@@ -214,38 +218,55 @@
             }
         }
 
-        .ai-answer-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 32px;
-            margin-bottom: 40px;
-            line-height: 1.7;
-            font-size: 1.05rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ai-answer-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary);
-        }
-
-        .ai-label {
+        .ai-header-minimal {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .ai-avatar-small {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .ai-name-label {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .ai-text-content {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text-main);
+            font-weight: 400;
+            max-width: 800px;
+        }
+
+        .ai-text-content b,
+        .ai-text-content strong {
+            font-weight: 700;
             color: var(--primary);
+        }
+
+        /* Results Grid */
+        .results-title {
+            font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.75rem;
             letter-spacing: 1px;
-            margin-bottom: 16px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .results-grid {
@@ -398,9 +419,9 @@
             <div class="logo-box">T</div>
             <span class="brand-name">Tchaller</span>
         </a>
-        <div style="display: flex; gap: 20px; font-size: 0.9rem; font-weight: 500;">
+        <div style="display: flex; gap: 24px; font-size: 0.9rem; font-weight: 500;">
             <a href="#" style="text-decoration: none; color: var(--text-main);">Explorer</a>
-            <a href="#" style="text-decoration: none; color: var(--text-muted);">À propos</a>
+            <a href="#" style="text-decoration: none; color: var(--text-muted);">Histoire</a>
         </div>
     </header>
 
@@ -412,9 +433,8 @@
 
         <div class="search-container">
             <div class="chat-input-wrapper">
-                <i data-lucide="search" style="color: #999; width: 20px;"></i>
-                <input type="text" id="searchInput"
-                    placeholder="Demandez n'importe quoi... ex: un café calme pour travailler" />
+                <i data-lucide="sparkles" style="color: var(--primary); width: 20px;"></i>
+                <input type="text" id="searchInput" placeholder="Que recherchez-vous ?" />
                 <button id="searchButton" class="btn-send">
                     <i data-lucide="arrow-right" style="width: 20px;"></i>
                 </button>
@@ -435,8 +455,14 @@
         </div>
 
         <div id="results">
-            <!-- AI Response Part -->
-            <div id="aiResponseContainer"></div>
+            <!-- Natural AI Response Area -->
+            <div id="aiResponseArea" class="ai-response-area"></div>
+
+            <div class="results-title">
+                <i data-lucide="layers" style="width: 14px;"></i>
+                Lieux recommandés
+            </div>
+
             <!-- Grid Results Part -->
             <div class="results-grid" id="activitiesGrid"></div>
         </div>
@@ -452,7 +478,7 @@
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
         const resultsDiv = document.getElementById('results');
-        const aiResponseContainer = document.getElementById('aiResponseContainer');
+        const aiResponseArea = document.getElementById('aiResponseArea');
         const activitiesGrid = document.getElementById('activitiesGrid');
         const loadingDiv = document.getElementById('loading');
         const tagElements = document.querySelectorAll('.tag');
@@ -481,7 +507,6 @@
             searchButton.disabled = true;
 
             try {
-                // Mock localisations
                 const latitude = -4.05;
                 const longitude = 5.35;
 
@@ -497,7 +522,7 @@
                 displayResults(data);
             } catch (error) {
                 console.error(error);
-                aiResponseContainer.innerHTML = `<div class="ai-answer-card">Désolé, une erreur est survenue lors de la connexion au cerveau de Tchaller.</div>`;
+                aiResponseArea.innerHTML = `<p style="color: red;">Désolé, une erreur est survenue.</p>`;
                 resultsDiv.style.display = 'block';
             } finally {
                 loadingDiv.style.display = 'none';
@@ -506,19 +531,17 @@
         }
 
         function displayResults(data) {
-            // 1. Réponse IA (Style Perplexity)
-            const aiText = data.response || "Voici les meilleurs endroits trouvés pour votre recherche.";
-            aiResponseContainer.innerHTML = `
-                <div class="ai-answer-card">
-                    <div class="ai-label">
-                        <i data-lucide="sparkles" style="width: 14px;"></i> Réponse IA
-                    </div>
-                    <div>${aiText.replace(/\n/g, '<br>')}</div>
+            // 1. Réponse IA Naturelle
+            const aiText = data.response || "D'après votre recherche, voici les meilleurs options à proximité.";
+
+            aiResponseArea.innerHTML = `
+                <div class="ai-header-minimal">
+                    <div class="ai-avatar-small"><i data-lucide="bot" style="width: 14px;"></i></div>
+                    <span class="ai-name-label">Tchaller AI</span>
                 </div>
-                <h3 style="margin-bottom: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
-                    <i data-lucide="map-pin" style="color: var(--primary); width: 20px;"></i>
-                    Lieux recommandés
-                </h3>
+                <div class="ai-text-content">
+                    ${aiText.replace(/\n/g, '<br>')}
+                </div>
             `;
 
             // 2. Grille de cartes
@@ -562,8 +585,7 @@
             resultsDiv.style.display = 'block';
             lucide.createIcons();
 
-            // Scroll smooth vers les résultats
-            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            window.scrollTo({ top: resultsDiv.offsetTop - 120, behavior: 'smooth' });
         }
     </script>
 </body>
