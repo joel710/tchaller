@@ -4,196 +4,389 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tchaller – Your Local AI Companion</title>
+    <title>Tchaller – Recherche Locale IA</title>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
+        :root {
+            --primary: #ff5b2e;
+            --primary-soft: rgba(255, 91, 46, 0.08);
+            --bg: #fcfcfd;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --border: #ececec;
+            --glass: rgba(255, 255, 255, 0.8);
+            --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 8px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         body {
-            font-family: "Inter", sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
-            background: radial-gradient(circle at center, #fff9f3 0%, #ffffff 100%);
-            color: #222;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(255, 91, 46, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 91, 46, 0.03) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 20px;
+            overflow-x: hidden;
         }
 
         header {
-            position: absolute;
-            top: 20px;
-            left: 30px;
-            font-weight: bold;
-            font-size: 22px;
-            color: #ff5b2e;
+            width: 100%;
+            padding: 24px 40px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background: var(--glass);
+            border-bottom: 1px solid var(--border);
         }
 
-        header span.logo {
-            background-color: #ff5b2e;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .logo-box {
+            background: var(--primary);
             color: white;
-            padding: 8px 12px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 8px;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .brand-name {
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        main {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 80px 20px;
+            flex: 1;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 48px;
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        p.subtitle {
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Search Bar Perplexity Style */
+        .search-container {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 8px;
+            box-shadow: var(--shadow);
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .search-container:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-soft);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+        }
+
+        .search-container input {
+            flex: 1;
+            border: none;
+            outline: none;
             font-size: 1.1rem;
-            color: #555;
-            margin-bottom: 40px;
+            font-family: inherit;
+            padding: 12px 0;
+            background: transparent;
         }
 
-        .search-box {
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 16px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-            padding: 20px;
-            width: 90%;
-            max-width: 700px;
+        .btn-send {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 91, 46, 0.3);
+        }
+
+        .btn-send:disabled {
+            background: #eee;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .tags {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
         }
 
         .tag {
-            border: 1px solid #ddd;
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            color: #444;
-            background-color: #fafafa;
+            background: white;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
             cursor: pointer;
-            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .tag:hover {
-            background-color: #ff5b2e;
-            color: white;
-            border-color: #ff5b2e;
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-soft);
         }
 
-        .chat-input {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            margin-top: 20px;
-            padding: 10px 15px;
-        }
-
-        .chat-input input {
-            flex: 1;
-            border: none;
-            outline: none;
-            font-size: 1rem;
-            padding: 8px;
-        }
-
-        .chat-input button {
-            background-color: #ff5b2e;
-            border: none;
-            color: white;
-            border-radius: 10px;
-            padding: 10px 18px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-
-        .chat-input button:hover {
-            background-color: #e14a22;
-        }
-
-        .chat-input button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
-        .results {
-            margin-top: 30px;
-            text-align: left;
+        /* Results Design */
+        #results {
+            margin-top: 60px;
             display: none;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .result-item {
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .result-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #ff5b2e;
+        .ai-answer-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 40px;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        .result-address {
-            color: #666;
-            margin-bottom: 10px;
+        .ai-answer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
         }
 
-        .result-rating {
-            color: #ff5b2e;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .result-contact {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .contact-item {
+        .ai-label {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 0.9rem;
+            gap: 8px;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
         }
 
-        .loading {
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .activity-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .activity-card:hover {
+            border-color: #ddd;
+            box-shadow: var(--shadow);
+            transform: translateY(-4px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .activity-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .distance-badge {
+            background: var(--primary-soft);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .activity-address {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rating-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .stars {
+            color: #fbbf24;
+        }
+
+        .price-level {
+            color: #10b981;
+        }
+
+        .card-actions {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-icon {
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .action-icon:hover {
+            color: var(--primary);
+        }
+
+        /* Loading Animation */
+        .loading-state {
             display: none;
             text-align: center;
-            margin: 20px 0;
+            padding: 40px;
         }
 
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
+        .pulse-loader {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
             border-radius: 50%;
-            border-top: 4px solid #ff5b2e;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+            margin: 0 auto 20px;
+            animation: pulse 1.5s infinite ease-in-out;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
         }
 
         footer {
-            margin-top: 30px;
+            padding: 40px;
+            text-align: center;
             font-size: 0.85rem;
-            color: #888;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            header {
+                padding: 16px 20px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -201,60 +394,77 @@
 <body>
 
     <header>
-        <span class="logo">T</span> <span>Tchaller</span>
+        <a href="#" class="logo-container">
+            <div class="logo-box">T</div>
+            <span class="brand-name">Tchaller</span>
+        </a>
+        <div style="display: flex; gap: 20px; font-size: 0.9rem; font-weight: 500;">
+            <a href="#" style="text-decoration: none; color: var(--text-main);">Explorer</a>
+            <a href="#" style="text-decoration: none; color: var(--text-muted);">À propos</a>
+        </div>
     </header>
 
     <main>
-        <h1>Your Local AI Companion</h1>
-        <p class="subtitle">Discute avec Tchaller pour découvrir des lieux, services et expériences autour de toi.</p>
+        <section class="hero-section">
+            <h1>Où allons-nous aujourd'hui ?</h1>
+            <p class="subtitle">Votre assistant intelligent pour découvrir le meilleur de votre ville en un instant.</p>
+        </section>
 
-        <div class="search-box">
-            <div class="chat-input">
-                <input type="text" id="searchInput" placeholder="Ex : Trouve-moi un endroit où je peux manger du porc" />
-                <button id="searchButton">Envoyer</button>
-            </div>
-
-            <div class="tags">
-                <div class="tag" data-query="pharmacie">🏥 Pharmacies</div>
-                <div class="tag" data-query="hôpital">🏥 Hôpitaux</div>
-                <div class="tag" data-query="école">🎓 Écoles</div>
-                <div class="tag" data-query="garage">🔧 Garages</div>
-                <div class="tag" data-query="banque">🏦 Banques</div>
+        <div class="search-container">
+            <div class="chat-input-wrapper">
+                <i data-lucide="search" style="color: #999; width: 20px;"></i>
+                <input type="text" id="searchInput"
+                    placeholder="Demandez n'importe quoi... ex: un café calme pour travailler" />
+                <button id="searchButton" class="btn-send">
+                    <i data-lucide="arrow-right" style="width: 20px;"></i>
+                </button>
             </div>
         </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Recherche en cours...</p>
+        <div class="tags">
+            <div class="tag" data-query="pharmacie de garde">🏥 Pharmacie</div>
+            <div class="tag" data-query="meilleur garage auto">🔧 Garage</div>
+            <div class="tag" data-query="restaurant terrasse">🍴 Restaurant</div>
+            <div class="tag" data-query="salle de sport">💪 Sport</div>
+            <div class="tag" data-query="distributeur banque">🏦 Banque</div>
         </div>
 
-        <div class="results" id="results"></div>
+        <div class="loading-state" id="loading">
+            <div class="pulse-loader"></div>
+            <p style="font-weight: 600; color: var(--text-muted);">Tchaller analyse votre demande...</p>
+        </div>
+
+        <div id="results">
+            <!-- AI Response Part -->
+            <div id="aiResponseContainer"></div>
+            <!-- Grid Results Part -->
+            <div class="results-grid" id="activitiesGrid"></div>
+        </div>
     </main>
 
     <footer>
-        © 2025 Tchaller – Powered by Strive Technologies
+        <p>© 2025 Tchaller – Intelligence Urbaine par Strive Technologies</p>
     </footer>
 
     <script>
-        // Backend URL
         const BACKEND_URL = 'https://tchallerback.onrender.com';
-        
-        // DOM Elements
+
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
         const resultsDiv = document.getElementById('results');
+        const aiResponseContainer = document.getElementById('aiResponseContainer');
+        const activitiesGrid = document.getElementById('activitiesGrid');
         const loadingDiv = document.getElementById('loading');
         const tagElements = document.querySelectorAll('.tag');
 
-        // Event Listeners
+        // Initialiser les icônes Lucide
+        lucide.createIcons();
+
         searchButton.addEventListener('click', performSearch);
         searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                performSearch();
-            }
+            if (e.key === 'Enter') performSearch();
         });
 
-        // Add event listeners to tags
         tagElements.forEach(tag => {
             tag.addEventListener('click', () => {
                 searchInput.value = tag.getAttribute('data-query');
@@ -262,57 +472,32 @@
             });
         });
 
-        // Perform search function
         async function performSearch() {
             const query = searchInput.value.trim();
-            
-            if (!query) {
-                alert('Veuillez entrer une requête de recherche');
-                return;
-            }
+            if (!query) return;
 
-            // Show loading, hide results
             loadingDiv.style.display = 'block';
             resultsDiv.style.display = 'none';
             searchButton.disabled = true;
 
             try {
-                // Get user's location (mocked for now)
-                const latitude = -4.05; // Default to Abidjan
-                const longitude = 5.35; // Default to Abidjan
+                // Mock localisations
+                const latitude = -4.05;
+                const longitude = 5.35;
 
-                // Prepare request data
-                const requestData = {
-                    query: query,
-                    latitude: latitude,
-                    longitude: longitude,
-                    radius: 10000, // 10km
-                    limit: 5
-                };
-
-                // Make API request
                 const response = await fetch(`${BACKEND_URL}/api/v1/search/`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(requestData)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, latitude, longitude, radius: 10000, limit: 6 })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`Erreur: ${response.status}`);
 
                 const data = await response.json();
                 displayResults(data);
             } catch (error) {
-                console.error('Error during search:', error);
-                resultsDiv.innerHTML = `
-                    <div class="result-item">
-                        <p>Erreur lors de la recherche: ${error.message}</p>
-                        <p>Veuillez vérifier que le backend est en cours d'exécution.</p>
-                    </div>
-                `;
+                console.error(error);
+                aiResponseContainer.innerHTML = `<div class="ai-answer-card">Désolé, une erreur est survenue lors de la connexion au cerveau de Tchaller.</div>`;
                 resultsDiv.style.display = 'block';
             } finally {
                 loadingDiv.style.display = 'none';
@@ -320,100 +505,65 @@
             }
         }
 
-        // Display results function
         function displayResults(data) {
-            if (!data.activities || data.activities.length === 0) {
-                resultsDiv.innerHTML = `
-                    <div class="result-item">
-                        <p>Aucun résultat trouvé pour "${data.query}".</p>
-                        <p>Essayez une autre recherche ou élargissez votre requête.</p>
+            // 1. Réponse IA (Style Perplexity)
+            const aiText = data.response || "Voici les meilleurs endroits trouvés pour votre recherche.";
+            aiResponseContainer.innerHTML = `
+                <div class="ai-answer-card">
+                    <div class="ai-label">
+                        <i data-lucide="sparkles" style="width: 14px;"></i> Réponse IA
                     </div>
-                `;
-                resultsDiv.style.display = 'block';
-                return;
-            }
-
-            // Display the natural language response first
-            let responseContent = "Je peux vous aider à trouver ce que vous cherchez !";
-            if (data.response) {
-                responseContent = data.response;
-            }
-            
-            let resultsHTML = `
-                <div class="result-item" style="background-color: #f0f8ff; border-left: 4px solid #ff5b2e; margin-bottom: 25px;">
-                    <h2 style="color: #ff5b2e; margin-top: 0;">💬 Réponse de Tchaller</h2>
-                    <div style="font-size: 1.1em; line-height: 1.6;">
-                        ${responseContent.replace(/\n/g, '<br>')}
-                    </div>
+                    <div>${aiText.replace(/\n/g, '<br>')}</div>
                 </div>
+                <h3 style="margin-bottom: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                    <i data-lucide="map-pin" style="color: var(--primary); width: 20px;"></i>
+                    Lieux recommandés
+                </h3>
             `;
-            
-            // Add detailed results
-            resultsHTML += `<h2 style="color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px;">📋 Détails des résultats pour "${data.query}"</h2>`;
-            
-            data.activities.forEach(activity => {
-                // Format distance
-                let distanceText = '';
-                if (activity.distance) {
-                    if (activity.distance < 1000) {
-                        distanceText = `${Math.round(activity.distance)} m`;
-                    } else {
-                        distanceText = `${(activity.distance / 1000).toFixed(1)} km`;
-                    }
-                }
 
-                // Format rating
-                let ratingText = '';
-                if (activity.rating && activity.rating > 0) {
-                    ratingText = `⭐ ${activity.rating.toFixed(1)}/5`;
-                    if (activity.review_count) {
-                        ratingText += ` (${activity.review_count} avis)`;
-                    }
-                }
+            // 2. Grille de cartes
+            activitiesGrid.innerHTML = '';
 
-                // Format price level
-                let priceText = '';
-                if (activity.price_level) {
-                    priceText = '€'.repeat(activity.price_level);
-                }
+            if (!data.activities || data.activities.length === 0) {
+                activitiesGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">Aucun lieu spécifique trouvé.</p>`;
+            } else {
+                data.activities.forEach(item => {
+                    const distance = item.distance ? (item.distance < 1000 ? `${Math.round(item.distance)}m` : `${(item.distance / 1000).toFixed(1)}km`) : '';
+                    const rating = item.rating ? `<span class="stars">★</span> ${item.rating.toFixed(1)}` : 'N/A';
 
-                // Format contact info
-                let contactHTML = '';
-                if (activity.phone_number || activity.whatsapp_number || activity.email || activity.website) {
-                    contactHTML = '<div class="result-contact">';
-                    
-                    if (activity.phone_number) {
-                        contactHTML += `<div class="contact-item">📞 ${activity.phone_number}</div>`;
-                    }
-                    
-                    if (activity.whatsapp_number) {
-                        contactHTML += `<div class="contact-item">💬 ${activity.whatsapp_number}</div>`;
-                    }
-                    
-                    if (activity.email) {
-                        contactHTML += `<div class="contact-item">✉️ ${activity.email}</div>`;
-                    }
-                    
-                    if (activity.website) {
-                        contactHTML += `<div class="contact-item">🌐 <a href="${activity.website}" target="_blank">Site web</a></div>`;
-                    }
-                    
-                    contactHTML += '</div>';
-                }
+                    const card = document.createElement('div');
+                    card.className = 'activity-card';
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <h4 class="activity-name">${item.name}</h4>
+                            ${distance ? `<span class="distance-badge">${distance}</span>` : ''}
+                        </div>
+                        <div class="activity-address">
+                            <i data-lucide="map-pin" style="width: 14px;"></i>
+                            ${item.address || 'Adresse non disponible'}
+                        </div>
+                        <div class="rating-row">
+                            ${rating} 
+                            ${item.price_level ? `<span class="price-level" style="margin-left: 8px;">${'€'.repeat(item.price_level)}</span>` : ''}
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 4px 0;">
+                            ${item.description ? item.description.substring(0, 80) + '...' : 'Pas de description supplémentaire.'}
+                        </p>
+                        <div class="card-actions">
+                            ${item.phone_number ? `<a href="tel:${item.phone_number}" class="action-icon"><i data-lucide="phone" style="width: 18px;"></i></a>` : ''}
+                            ${item.website ? `<a href="${item.website}" target="_blank" class="action-icon"><i data-lucide="external-link" style="width: 18px;"></i></a>` : ''}
+                            <div class="action-icon" style="margin-left: auto;"><i data-lucide="heart" style="width: 18px;"></i></div>
+                        </div>
+                    `;
+                    activitiesGrid.appendChild(card);
+                });
+            }
 
-                resultsHTML += `
-                    <div class="result-item">
-                        <div class="result-name">${activity.name}</div>
-                        <div class="result-address">${activity.address} ${distanceText ? `(${distanceText})` : ''}</div>
-                        ${ratingText ? `<div class="result-rating">${ratingText} ${priceText}</div>` : ''}
-                        <p>${activity.description || ''}</p>
-                        ${contactHTML}
-                    </div>
-                `;
-            });
-
-            resultsDiv.innerHTML = resultsHTML;
             resultsDiv.style.display = 'block';
+            lucide.createIcons();
+
+            // Scroll smooth vers les résultats
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     </script>
 </body>

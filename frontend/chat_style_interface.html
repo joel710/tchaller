@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tchaller - Assistant IA Local</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff5b2e 0%, #ff7b5c 100%);
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            background: white;
+            color: #ff5b2e;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+
+        .message {
+            margin-bottom: 25px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .assistant-message {
+            display: flex;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, #ff5b2e 0%, #ff7b5c 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .assistant-message .message-content {
+            background: #f0f4f8;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .user-message .message-header {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .assistant-message .message-header {
+            color: #ff5b2e;
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .user-avatar {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .assistant-avatar {
+            background: #ff5b2e;
+            color: white;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .quick-prompts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .prompt-chip {
+            background: #f0f4f8;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .prompt-chip:hover {
+            background: #ff5b2e;
+            color: white;
+        }
+
+        .chat-input {
+            flex: 1;
+            position: relative;
+        }
+
+        .chat-input textarea {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e1e5eb;
+            border-radius: 25px;
+            resize: none;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s ease;
+            max-height: 150px;
+            min-height: 50px;
+        }
+
+        .chat-input textarea:focus {
+            border-color: #ff5b2e;
+        }
+
+        .send-button {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            background: #ff5b2e;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .send-button:hover {
+            background: #e14a22;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px 20px;
+            background: #f0f4f8;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            width: fit-content;
+        }
+
+        .typing-dots {
+            display: flex;
+            align-items: center;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #ff5b2e;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: bounce 1.5s infinite;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .activity-name {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #ff5b2e;
+        }
+
+        .activity-distance {
+            background: #e1f0ff;
+            color: #1a73e8;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+        }
+
+        .activity-address {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .activity-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+
+        .rating {
+            color: #ff5b2e;
+            font-weight: 600;
+        }
+
+        .price-level {
+            color: #28a745;
+        }
+
+        .activity-contact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .contact-item a {
+            color: #ff5b2e;
+            text-decoration: none;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .chat-messages {
+                padding: 15px;
+            }
+            
+            .message-content {
+                max-width: 90%;
+            }
+            
+            .header h1 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">T</div>
+            <h1>Tchaller - Votre Assistant IA Local</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message assistant-message">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <div class="avatar assistant-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <span>Tchaller</span>
+                        </div>
+                        <p>Bonjour ! 👋 Je suis Tchaller, votre assistant IA local. Je peux vous aider à trouver des lieux, services et expériences autour de vous. Que puis-je faire pour vous aujourd'hui ?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <div class="quick-prompts">
+                <button class="prompt-chip" data-prompt="Trouve-moi une pharmacie ouverte maintenant">🏥 Pharmacie d'urgence</button>
+                <button class="prompt-chip" data-prompt="Où puis-je trouver un hôpital près de moi ?">🏥 Hôpital</button>
+                <button class="prompt-chip" data-prompt="Cherche une école primaire dans mon quartier">🎓 École</button>
+                <button class="prompt-chip" data-prompt="Trouve un garage pour réparer ma voiture">🔧 Garage</button>
+            </div>
+            
+            <div class="input-area">
+                <div class="chat-input">
+                    <textarea id="messageInput" placeholder="Décrivez ce que vous cherchez..." rows="1"></textarea>
+                    <button class="send-button" id="sendButton">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Backend URL
+        const BACKEND_URL = 'https://tchallerback.onrender.com';
+        
+        // DOM Elements
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const promptChips = document.querySelectorAll('.prompt-chip');
+
+        // Auto-resize textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Event Listeners
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Add event listeners to prompt chips
+        promptChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                messageInput.value = chip.getAttribute('data-prompt');
+                sendMessage();
+            });
+        });
+
+        // Send message function
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            
+            if (!message) return;
+
+            // Add user message to chat
+            addMessageToChat(message, 'user');
+            
+            // Clear input and reset height
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Get user's location (mocked for now)
+                const latitude = -4.05; // Default to Abidjan
+                const longitude = 5.35; // Default to Abidjan
+
+                // Prepare request data
+                const requestData = {
+                    query: message,
+                    latitude: latitude,
+                    longitude: longitude,
+                    radius: 10000, // 10km
+                    limit: 5
+                };
+
+                // Make API request
+                const response = await fetch(`${BACKEND_URL}/api/v1/search/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                // Hide typing indicator
+                hideTypingIndicator();
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Add assistant response to chat
+                addMessageToChat(data.response || "Je peux vous aider à trouver ce que vous cherchez !", 'assistant', data.activities);
+                
+            } catch (error) {
+                console.error('Error during search:', error);
+                // Hide typing indicator
+                hideTypingIndicator();
+                // Add error message
+                addMessageToChat(`Désolé, je rencontre un problème technique. Veuillez réessayer plus tard. (${error.message})`, 'assistant');
+            }
+        }
+
+        // Add message to chat
+        function addMessageToChat(content, sender, activities = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            const avatarIcon = sender === 'user' ? 'fas fa-user' : 'fas fa-robot';
+            const avatarClass = sender === 'user' ? 'user-avatar' : 'assistant-avatar';
+            const senderName = sender === 'user' ? 'Vous' : 'Tchaller';
+            
+            let messageHTML = `
+                <div class="message-content">
+                    <div class="message-header">
+                        <div class="avatar ${avatarClass}">
+                            <i class="${avatarIcon}"></i>
+                        </div>
+                        <span>${senderName}</span>
+                    </div>
+                    <p>${content.replace(/\n/g, '<br>')}</p>
+            `;
+            
+            // Add activities if provided
+            if (activities && activities.length > 0) {
+                messageHTML += '<div style="margin-top: 20px;">';
+                activities.forEach(activity => {
+                    messageHTML += createActivityCard(activity);
+                });
+                messageHTML += '</div>';
+            }
+            
+            messageHTML += '</div>';
+            messageDiv.innerHTML = messageHTML;
+            
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Create activity card
+        function createActivityCard(activity) {
+            // Format distance
+            let distanceText = '';
+            if (activity.distance) {
+                if (activity.distance < 1000) {
+                    distanceText = `${Math.round(activity.distance)} m`;
+                } else {
+                    distanceText = `${(activity.distance / 1000).toFixed(1)} km`;
+                }
+            }
+
+            // Format rating
+            let ratingHTML = '';
+            if (activity.rating && activity.rating > 0) {
+                ratingHTML = `<span class="meta-item"><i class="fas fa-star"></i> <span class="rating">${activity.rating.toFixed(1)}/5</span></span>`;
+                if (activity.review_count) {
+                    ratingHTML += ` <span class="meta-item">(${activity.review_count} avis)</span>`;
+                }
+            }
+
+            // Format price level
+            let priceHTML = '';
+            if (activity.price_level) {
+                const priceIcons = '€'.repeat(activity.price_level);
+                priceHTML = `<span class="meta-item"><i class="fas fa-tag"></i> <span class="price-level">${priceIcons}</span></span>`;
+            }
+
+            // Format contact info
+            let contactHTML = '';
+            const contactItems = [];
+            
+            if (activity.phone_number) {
+                contactItems.push(`<span class="contact-item"><i class="fas fa-phone"></i> ${activity.phone_number}</span>`);
+            }
+            
+            if (activity.whatsapp_number) {
+                contactItems.push(`<span class="contact-item"><i class="fab fa-whatsapp"></i> ${activity.whatsapp_number}</span>`);
+            }
+            
+            if (activity.email) {
+                contactItems.push(`<span class="contact-item"><i class="fas fa-envelope"></i> ${activity.email}</span>`);
+            }
+            
+            if (activity.website) {
+                contactItems.push(`<span class="contact-item"><i class="fas fa-globe"></i> <a href="${activity.website}" target="_blank">Site web</a></span>`);
+            }
+            
+            if (contactItems.length > 0) {
+                contactHTML = `
+                    <div class="activity-contact">
+                        ${contactItems.join('')}
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-name">${activity.name}</div>
+                        ${distanceText ? `<div class="activity-distance">${distanceText}</div>` : ''}
+                    </div>
+                    <div class="activity-address">${activity.address}</div>
+                    <div class="activity-meta">
+                        ${ratingHTML}
+                        ${priceHTML}
+                        ${activity.category_name ? `<span class="meta-item"><i class="fas fa-folder"></i> ${activity.category_name}</span>` : ''}
+                    </div>
+                    ${activity.description ? `<p style="margin-bottom: 15px; color: #555;">${activity.description}</p>` : ''}
+                    ${contactHTML}
+                </div>
+            `;
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="message-header">
+                    <div class="avatar assistant-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <span>Tchaller</span>
+                </div>
+                <div class="typing-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+    </script>
+</body>
+</html>
