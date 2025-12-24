@@ -101,6 +101,7 @@
             margin-bottom: 16px;
             background: linear-gradient(135deg, #1a1a1a 0%, #444 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -409,6 +410,86 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Mobile Popup Style */
+        .mobile-popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .mobile-popup {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: popupScale 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes popupScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .mobile-popup i {
+            background: var(--primary-soft);
+            color: var(--primary);
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .mobile-popup h2 {
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .mobile-popup p {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .btn-mobile-switch {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .btn-mobile-close {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -421,7 +502,7 @@
         </a>
         <div style="display: flex; gap: 24px; font-size: 0.9rem; font-weight: 500;">
             <a href="#" style="text-decoration: none; color: var(--text-main);">Explorer</a>
-            <a href="#" style="text-decoration: none; color: var(--text-muted);">Histoire</a>
+            <a href="mobile.html" style="text-decoration: none; color: var(--text-muted);">Mobile</a>
         </div>
     </header>
 
@@ -472,8 +553,38 @@
         <p>© 2025 Tchaller – Intelligence Urbaine par Strive Technologies</p>
     </footer>
 
+    <!-- Mobile Popup Modal -->
+    <div class="mobile-popup-overlay" id="mobilePopup">
+        <div class="mobile-popup">
+            <i data-lucide="smartphone" style="width: 32px; height: 32px;"></i>
+            <h2>Tchaller Mobile</h2>
+            <p>Nous avons détecté que vous utilisez un appareil mobile. Souhaitez-vous passer à notre interface
+                optimisée ?</p>
+            <button class="btn-mobile-switch" onclick="window.location.href='mobile.html'">Utiliser la version
+                mobile</button>
+            <button class="btn-mobile-close" onclick="closeMobilePopup()">Rester ici</button>
+        </div>
+    </div>
+
     <script>
         const BACKEND_URL = 'https://tchallerback.onrender.com';
+
+        // Check for mobile on load
+        window.addEventListener('load', () => {
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768) {
+                // Check if we haven't already asked or if it's a new session
+                const dismissed = sessionStorage.getItem('mobilePopupDismissed');
+                if (!dismissed) {
+                    document.getElementById('mobilePopup').style.display = 'flex';
+                    lucide.createIcons(); // Re-init icons for the popup
+                }
+            }
+        });
+
+        function closeMobilePopup() {
+            document.getElementById('mobilePopup').style.display = 'none';
+            sessionStorage.setItem('mobilePopupDismissed', 'true');
+        }
 
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
