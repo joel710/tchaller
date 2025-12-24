@@ -435,12 +435,19 @@
             }
         }
 
+        // Helper to parse basic markdown (**bold**)
+        function parseMarkdown(text) {
+            if (!text) return "";
+            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
+
         function renderResults(data) {
             homeState.style.display = 'none';
             resultsContainer.style.display = 'block';
 
             // Animation de texte "naturelle"
-            aiText.innerHTML = data.response || "Voici ce que j'ai trouvé de mieux pour vous à proximité.";
+            const rawAiText = data.response || "Voici ce que j'ai trouvé de mieux pour vous à proximité.";
+            aiText.innerHTML = parseMarkdown(rawAiText).replace(/\n/g, '<br>');
 
             activitiesList.innerHTML = '';
             data.activities.forEach(act => {

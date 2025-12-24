@@ -530,9 +530,16 @@
             }
         }
 
+        // Helper to parse basic markdown (**bold**)
+        function parseMarkdown(text) {
+            if (!text) return "";
+            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
+
         function displayResults(data) {
             // 1. Réponse IA Naturelle
-            const aiText = data.response || "D'après votre recherche, voici les meilleurs options à proximité.";
+            const rawAiText = data.response || "D'après votre recherche, voici les meilleurs options à proximité.";
+            const formattedAiText = parseMarkdown(rawAiText);
 
             aiResponseArea.innerHTML = `
                 <div class="ai-header-minimal">
@@ -540,7 +547,7 @@
                     <span class="ai-name-label">Tchaller AI</span>
                 </div>
                 <div class="ai-text-content">
-                    ${aiText.replace(/\n/g, '<br>')}
+                    ${formattedAiText.replace(/\n/g, '<br>')}
                 </div>
             `;
 
