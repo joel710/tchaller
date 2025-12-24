@@ -56,6 +56,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            background: white;
+            z-index: 100;
         }
 
         .brand {
@@ -84,7 +86,8 @@
         main {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 24px 150px 24px;
+            padding: 20px 0 150px 0;
+            /* Padding horizontal géré par sections */
             scrollbar-width: none;
         }
 
@@ -92,8 +95,12 @@
             display: none;
         }
 
+        .section-padding {
+            padding: 0 24px;
+        }
+
         .welcome-msg {
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
 
         .welcome-msg h1 {
@@ -104,9 +111,116 @@
             letter-spacing: -0.5px;
         }
 
-        /* AI Conversation Style */
+        /* Promotion Carousel (Play Store Style) */
+        .promo-carousel {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 10px 24px 30px 24px;
+            scrollbar-width: none;
+        }
+
+        .promo-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .promo-card {
+            min-width: 300px;
+            height: 160px;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+            background: #eee;
+        }
+
+        .promo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .promo-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            color: white;
+        }
+
+        .promo-tag {
+            background: var(--primary);
+            width: fit-content;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .promo-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        /* Discovery List Home */
+        .discovery-card {
+            background: var(--surface);
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .discovery-img {
+            height: 140px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .discovery-info {
+            padding: 16px;
+        }
+
+        .discovery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .discovery-name {
+            font-weight: 700;
+            font-size: 17px;
+            margin: 0;
+        }
+
+        .discovery-cat {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Common Styles */
+        .section-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 24px 0 16px 24px;
+            display: block;
+        }
+
         .ai-flow {
-            margin-bottom: 40px;
+            margin: 0 24px 40px 24px;
         }
 
         .ai-message {
@@ -133,33 +247,20 @@
             margin-bottom: 12px;
             font-size: 12px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
             color: var(--primary);
         }
 
         .ai-content {
             font-size: 18px;
             line-height: 1.6;
-            color: var(--text-main);
             font-weight: 400;
-        }
-
-        /* Activity Cards Mobile */
-        .section-label {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
-            display: block;
         }
 
         .activities-vertical {
             display: flex;
             flex-direction: column;
             gap: 16px;
+            padding: 0 24px;
         }
 
         .activity-card {
@@ -169,135 +270,10 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            border: 1px solid transparent;
             cursor: pointer;
         }
 
-        .activity-card:active {
-            transform: scale(0.97);
-            background: #f0f0f2;
-        }
-
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .card-title {
-            font-weight: 700;
-            font-size: 17px;
-            margin: 0;
-        }
-
-        .badge-dist {
-            background: white;
-            padding: 4px 10px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 700;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-        }
-
-        .card-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .rating {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        .rating i {
-            color: #FFB800;
-            fill: #FFB800;
-        }
-
-        /* Bottom Floating Bar */
-        .bottom-action-area {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px 20px calc(var(--safe-bottom) + 10px) 20px;
-            background: linear-gradient(transparent, white 40%);
-            z-index: 500;
-        }
-
-        .search-bar-pill {
-            background: #1a1a1a;
-            border-radius: 30px;
-            padding: 6px 6px 6px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .search-bar-pill input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            font-family: inherit;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .btn-circle {
-            width: 44px;
-            height: 44px;
-            background: var(--primary);
-            border-radius: 50%;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-        }
-
-        /* Loading Overlay */
-        .loader-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .loader-dot {
-            width: 12px;
-            height: 12px;
-            background: var(--primary);
-            border-radius: 50%;
-            animation: bounce 0.5s infinite alternate;
-        }
-
-        @keyframes bounce {
-            from {
-                transform: translateY(0);
-                opacity: 1;
-            }
-
-            to {
-                transform: translateY(-20px);
-                opacity: 0.3;
-            }
-        }
-
-        /* Bottom Sheet (Modal 3/4) */
+        /* Bottom Sheet */
         .overlay-sheet {
             position: fixed;
             inset: 0;
@@ -331,7 +307,6 @@
             background: #e0e0e0;
             border-radius: 2px;
             margin: 12px auto;
-            flex-shrink: 0;
         }
 
         .sheet-content {
@@ -341,38 +316,20 @@
             scrollbar-width: none;
         }
 
-        .sheet-content::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Carousel images */
         .image-carousel {
             display: flex;
             gap: 12px;
             overflow-x: auto;
             margin: 0 -24px 20px -24px;
             padding: 0 24px;
-            scrollbar-width: none;
-        }
-
-        .image-carousel::-webkit-scrollbar {
-            display: none;
         }
 
         .carousel-img {
             width: 280px;
             height: 180px;
-            background: #f0f0f0;
             border-radius: 20px;
             flex-shrink: 0;
             object-fit: cover;
-        }
-
-        .sheet-title {
-            font-size: 24px;
-            font-weight: 800;
-            margin: 0 0 8px 0;
-            letter-spacing: -0.5px;
         }
 
         .status-pill {
@@ -401,13 +358,6 @@
             color: var(--status-prob);
         }
 
-        .sheet-description {
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--text-muted);
-            margin-bottom: 30px;
-        }
-
         .sheet-actions {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -433,26 +383,78 @@
             color: var(--primary);
         }
 
-        .report-btn {
+        /* Search Bar */
+        .bottom-action-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 20px calc(var(--safe-bottom) + 10px) 20px;
+            background: linear-gradient(transparent, white 40%);
+            z-index: 500;
+        }
+
+        .search-bar-pill {
+            background: #1a1a1a;
+            border-radius: 30px;
+            padding: 6px 6px 6px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-bar-pill input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .btn-circle {
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: none;
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            width: fit-content;
-            margin: 0 auto;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 12px;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 100px;
-            opacity: 0.7;
         }
 
-        .report-btn:active {
-            background: var(--surface);
-            opacity: 1;
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .loader-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-20px);
+                opacity: 0.3;
+            }
         }
     </style>
 </head>
@@ -480,23 +482,74 @@
 
     <main id="mainScroll">
         <div id="homeState">
-            <div class="welcome-msg">
+            <div class="welcome-msg section-padding">
                 <h1>Hello,<br>Où vas-tu ?</h1>
             </div>
 
-            <span class="section-label">Suggestions pour vous</span>
-            <div class="activities-vertical" style="margin-bottom: 30px;">
-                <div class="tag-row"
-                    style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none;">
-                    <div class="tag-pill"
-                        style="background: var(--surface); padding: 12px 20px; border-radius: 20px; white-space: nowrap; font-weight: 600; font-size: 14px;">
-                        ☕️ Café travail</div>
-                    <div class="tag-pill"
-                        style="background: var(--surface); padding: 12px 20px; border-radius: 20px; white-space: nowrap; font-weight: 600; font-size: 14px;">
-                        🍕 Pizza tard</div>
-                    <div class="tag-pill"
-                        style="background: var(--surface); padding: 12px 20px; border-radius: 20px; white-space: nowrap; font-weight: 600; font-size: 14px;">
-                        🌳 Parc calme</div>
+            <!-- Promotion Carousel -->
+            <div class="promo-carousel">
+                <div class="promo-card">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500" alt="Promo 1">
+                    <div class="promo-overlay">
+                        <span class="promo-tag">Promotion</span>
+                        <h3 class="promo-title">-20% sur les Brunchs</h3>
+                    </div>
+                </div>
+                <div class="promo-card">
+                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500" alt="Promo 2">
+                    <div class="promo-overlay">
+                        <span class="promo-tag">Événement</span>
+                        <h3 class="promo-title">Soirée Jazz ce soir</h3>
+                    </div>
+                </div>
+            </div>
+
+            <span class="section-label">Suggestions rapides</span>
+            <div class="section-padding"
+                style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none;">
+                <div class="tag-pill"
+                    style="background: var(--surface); padding: 12px 20px; border-radius: 20px; white-space: nowrap; font-weight: 600; font-size: 14px;"
+                    onclick="quickSearch('Café tranquille')">☕️ Café tranquille</div>
+                <div class="tag-pill"
+                    style="background: var(--surface); padding: 12px 20px; border-radius: 20px; white-space: nowrap; font-weight: 600; font-size: 14px;"
+                    onclick="quickSearch('Pharmacie ouverte')">🏥 Pharmacie</div>
+                <div class="tag-pill"
+                    style="background: var(--surface); padding: 12px 20px; border-radius: 20px; white-space: nowrap; font-weight: 600; font-size: 14px;"
+                    onclick="quickSearch('Pizza tard')">🍕 Pizza tard</div>
+            </div>
+
+            <span class="section-label">À découvrir à proximité</span>
+            <div class="section-padding" id="discoveryList">
+                <!-- Recommendations initiales style App Store -->
+                <div class="discovery-card"
+                    onclick="openSheet({name: 'Le Comptoir Floral', address: '12 Rue des Lilas', rating: 4.8})">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500" class="discovery-img">
+                    <div class="discovery-info">
+                        <div class="discovery-header">
+                            <h4 class="discovery-name">Le Comptoir Floral</h4>
+                            <span class="badge-dist">400m</span>
+                        </div>
+                        <div style="display:flex; justify-content: space-between; align-items: center;">
+                            <span class="discovery-cat">Restaurant • Français</span>
+                            <span style="color: var(--status-open); font-size: 12px; font-weight: 700;">Ouvert</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="discovery-card"
+                    onclick="openSheet({name: 'Artisan Coiffeur', address: '45 Avenue de la République', rating: 4.9})">
+                    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500" class="discovery-img">
+                    <div class="discovery-info">
+                        <div class="discovery-header">
+                            <h4 class="discovery-name">Artisan Coiffeur</h4>
+                            <span class="badge-dist">1.2km</span>
+                        </div>
+                        <div style="display:flex; justify-content: space-between; align-items: center;">
+                            <span class="discovery-cat">Beauté • Coiffeur</span>
+                            <span style="color: var(--status-prob); font-size: 12px; font-weight: 700;">Ferme
+                                bientôt</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -511,8 +564,7 @@
                     <div class="ai-content" id="aiText"></div>
                 </div>
             </div>
-
-            <span class="section-label">Sélection locale</span>
+            <span class="section-label">Résultats de recherche</span>
             <div class="activities-vertical" id="activitiesList"></div>
         </div>
     </main>
@@ -521,14 +573,12 @@
     <div class="overlay-sheet" id="sheetOverlay"></div>
     <div class="bottom-sheet" id="bottomSheet">
         <div class="sheet-handle"></div>
-        <div class="sheet-content" id="sheetContent">
-            <!-- Injecté dynamiquement -->
-        </div>
+        <div class="sheet-content" id="sheetContent"></div>
     </div>
 
     <div class="loader-overlay" id="loader">
         <div class="loader-dot"></div>
-        <p style="margin-top: 20px; font-weight: 700;">Recherche en cours...</p>
+        <p style="margin-top: 20px; font-weight: 700;">Tchaller cherche...</p>
     </div>
 
     <div class="bottom-action-area">
@@ -549,8 +599,6 @@
         const resultsContainer = document.getElementById('resultsContainer');
         const aiText = document.getElementById('aiText');
         const activitiesList = document.getElementById('activitiesList');
-
-        // Modal elements
         const sheetOverlay = document.getElementById('sheetOverlay');
         const bottomSheet = document.getElementById('bottomSheet');
         const sheetContent = document.getElementById('sheetContent');
@@ -561,13 +609,10 @@
         searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSearch(); });
         sheetOverlay.addEventListener('click', closeSheet);
 
-        // Swipe pour fermer (basique)
-        let startY = 0;
-        bottomSheet.addEventListener('touchstart', e => startY = e.touches[0].clientY);
-        bottomSheet.addEventListener('touchmove', e => {
-            const currentY = e.touches[0].clientY;
-            if (currentY - startY > 100) closeSheet();
-        });
+        function quickSearch(val) {
+            searchInput.value = val;
+            handleSearch();
+        }
 
         async function handleSearch() {
             const query = searchInput.value.trim();
@@ -589,15 +634,10 @@
             }
         }
 
-        function parseMarkdown(text) {
-            if (!text) return "";
-            return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        }
-
         function renderResults(data) {
             homeState.style.display = 'none';
             resultsContainer.style.display = 'block';
-            aiText.innerHTML = parseMarkdown(data.response || "Voici mes trouvailles.").replace(/\n/g, '<br>');
+            aiText.innerHTML = (data.response || "Voici mes suggestions.").replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
 
             activitiesList.innerHTML = '';
             data.activities.forEach(act => {
@@ -623,7 +663,6 @@
         }
 
         function openSheet(activity) {
-            // Mock des statuts et images pour la démo
             const statuses = [
                 { class: 'status-open', text: 'Ouvert actuellement', icon: 'check-circle' },
                 { class: 'status-closed', text: 'Fermé', icon: 'x-circle' },
@@ -635,35 +674,19 @@
                 <div class="image-carousel">
                     <img class="carousel-img" src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400" alt="Lieu 1">
                     <img class="carousel-img" src="https://images.unsplash.com/photo-1559925393-8be0ec418d42?w=400" alt="Lieu 2">
-                    <img class="carousel-img" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400" alt="Lieu 3">
                 </div>
-                
                 <h2 class="sheet-title">${activity.name}</h2>
                 <div class="status-pill ${randomStatus.class}">
                     <i data-lucide="${randomStatus.icon}" style="width: 16px;"></i>
                     ${randomStatus.text}
                 </div>
-
-                <p class="sheet-description">
-                    ${activity.description || "Ce lieu est très apprécié pour son ambiance et la qualité de son service. Un incontournable du quartier."}
-                </p>
-
+                <p class="sheet-description">${activity.description || "Un lieu exceptionnel recommandé par la communauté Tchaller."}</p>
                 <div class="sheet-actions">
-                    <a href="tel:${activity.phone_number || '#'}" class="action-btn">
-                        <i data-lucide="phone"></i>
-                        Appeler
-                    </a>
-                    <a href="https://wa.me/${activity.phone_number?.replace(/\s/g, '') || '#'}" class="action-btn">
-                        <i data-lucide="message-circle"></i>
-                        WhatsApp
-                    </a>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(activity.address)}" target="_blank" class="action-btn">
-                        <i data-lucide="map"></i>
-                        Itinéraire
-                    </a>
+                    <a href="#" class="action-btn"><i data-lucide="phone"></i>Appeler</a>
+                    <a href="#" class="action-btn"><i data-lucide="message-circle"></i>WhatsApp</a>
+                    <a href="#" class="action-btn"><i data-lucide="map"></i>Itinéraire</a>
                 </div>
-
-                <button class="report-btn" onclick="alert('Merci pour votre signalement !')">
+                <button class="report-btn" onclick="closeSheet()">
                     <i data-lucide="alert-triangle" style="width: 14px;"></i>
                     Signaler un statut incorrect
                 </button>
@@ -680,9 +703,7 @@
         function closeSheet() {
             bottomSheet.style.transform = 'translateY(100%)';
             sheetOverlay.style.opacity = '0';
-            setTimeout(() => {
-                sheetOverlay.style.display = 'none';
-            }, 300);
+            setTimeout(() => { sheetOverlay.style.display = 'none'; }, 300);
         }
     </script>
 </body>
